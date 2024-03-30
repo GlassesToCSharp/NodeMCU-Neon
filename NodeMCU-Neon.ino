@@ -68,8 +68,8 @@ void setup() {
   Serial.print(WiFi.localIP());
   Serial.println(F("/"));
   
-  // server.on("/", handleOnConnect);
-  server.on("/led", handleLedState);
+  // Handlers
+  server.on("/neon-brightness", handleNeonBrightness);
 }
  
 void loop() {
@@ -77,50 +77,23 @@ void loop() {
   server.handleClient();
 }
 
-void handleOnConnect() {
-  digitalWrite(boardLedPin, HIGH);
-  server.send(200, "text/html", sendHtml(!digitalRead(boardLedPin))); 
-}
-
-void handleLedState() {
-  bool value = false;
+void handleNeonBrightness() {
+  byte value = 0;
+  int statusCode = 400;
+  char content = "text/plain";
+  char response[20] = "";
   if (server.hasArg("plain")) {
-    Serial.println(server.arg("plain"));
     String json = server.arg("plain");
     JsonDocument doc;
     deserializeJson(doc, json);
-    value = doc["state"];
-    server.send(200, "text/html", sendHtml(value)); 
-  } else {
-    server.send(400, "text/plain", ""); 
+    value = doc["brightness"];
+    if (value < 0 || value > 255) {
+      response = F("0<=Brightess<=20")
+    } else {
+      statusCode = 204;
+      // TODO: Set PWN of Neon brightness
+      // Use analogWrite(NeonPin) ?
+    }
   }
+  server.send(statusCode, content, response); 
 }
-
-void handleLedOnState() {
-  digitalWrite(boardLedPin, LOW);
-  server.send(200, "text/html", sendHtml(!digitalRead(boardLedPin))); 
-}
-
-void handleLedOffState() {
-  digitalWrite(boardLedPin, HIGH);
-  server.send(200, "text/html", sendHtml(!digitalRead(boardLedPin))); 
-}
-
-String sendHtml(bool status) {
-  String ptr = "<!DOCTYPE HTML>";
-  ptr += "<html>";
-  ptr += "Led pin is now: ";
- 
-  if(status == HIGH) {
-    ptr += "On";
-  } else {
-    ptr += "Off";
-  }
-  ptr += "<br><br>";
-  ptr += "<a href=\"/led=on\"\"><button>Turn On </button></a>";
-  ptr += "<a href=\"/led=off\"\"><button>Turn Off </button></a><br />";
-  ptr += "</html>";
-
-  return ptr;
-}
- 
