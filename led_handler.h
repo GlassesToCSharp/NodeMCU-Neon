@@ -13,4 +13,4 @@ extern void initialiseLedHandler(LedState state);
 extern void setLedHandlerState(LedState newState);
 extern void setBoardLedState(bool enable);
 
-#define LED_HANDLER_H
+#endif

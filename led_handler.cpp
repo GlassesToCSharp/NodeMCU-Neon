@@ -47,10 +47,6 @@ void _ledIsr() {
 
 void setLedHandlerState(LedState newState) {
   currentState = newState;
-  Serial.print("LED time on: ");
-  Serial.println(_getLedTimeOn());
-  Serial.print("LED time off: ");
-  Serial.println(_getLedTimeOff());
 }
 
 void _setLedTime(int milliseconds) {

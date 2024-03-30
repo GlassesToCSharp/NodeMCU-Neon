@@ -2,7 +2,6 @@
 #include <ESP8266WebServer.h>
 
 #include "eeprom_handler.h"
-#include "http_handler.h"
 #include "led_handler.h"
 #include "pinouts.h"
 
@@ -15,7 +14,7 @@ void setup() {
   Serial.begin(115200);
   delay(10);
   initialiseLedHandler();
-  Serial.println("Testing light...");
+  Serial.println(F("Testing light..."));
   delay(5000);
   setLedHandlerState(STATE_CONNECTING);
 
@@ -26,22 +25,24 @@ void setup() {
   getNetworkKey(password);
 
   if (ssid[0] == '\0') {
-    Serial.println("No network SSID saved.")
-    Serial.println("A network SSID must be saved to connect to WiFi.")
-    while(1);
+    Serial.println(F("No network SSID saved."));
+    Serial.println(F("A network SSID must be saved to connect to WiFi."));
+    while(1) {
+      delay(1000);
+    }
   }
  
   // Connect to WiFi network
   Serial.println();
   Serial.println();
-  Serial.print("Connecting to ");
+  Serial.print(F("Connecting to "));
   Serial.println(ssid);
  
   WiFi.begin(ssid, password);
  
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
+    Serial.print(F("."));
     if (WiFi.status() == WL_CONNECT_FAILED) {
       setLedHandlerState(STATE_FAILED);
       setBoardLedState(false);
@@ -52,18 +53,17 @@ void setup() {
   }
   setLedHandlerState(STATE_CONNECTED);
   
-  Serial.println("");
-  Serial.println("WiFi connected");
+  Serial.println();
+  Serial.println(F("WiFi connected"));
  
   // Start the server
   server.begin();
-  Serial.println("Server started");
+  Serial.println(F("Server started"));
  
   // Print the IP address
-  Serial.print("Use this URL to connect: ");
-  Serial.print("http://");
+  Serial.print(F("Use this URL to connect: http://"));
   Serial.print(WiFi.localIP());
-  Serial.println("/");
+  Serial.println(F("/"));
   
   server.on("/", handleOnConnect);
   server.on("/led=on", handleLedOnState);
