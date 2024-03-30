@@ -1,3 +1,6 @@
+#ifndef PINOUTS_H
+#define PINOUTS_H
+
 #define D0 16
 #define D1 5
 #define D2 4
@@ -10,3 +13,5 @@
 
 #define BOARD_LED D0
 #define WIFI_LED D4
+
+#endif
