@@ -2,10 +2,11 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
 
+#include "eeprom_handler.h"
 #include "http_handler.h"
 #include "led_handler.h"
 #include "pinouts.h"
-#include "wifi_credentials.h"
+// #include "wifi_credentials.h"
 
 int espLedPin = WIFI_LED; // ESP LED Pin
 int boardLedPin = BOARD_LED; // Board LED Pin
@@ -19,6 +20,18 @@ void setup() {
   Serial.println("Testing light...");
   delay(5000);
   setLedHandlerState(STATE_CONNECTING);
+
+  // Read Network SSID and Passcode from EEPROM
+  char ssid[MAX_SSID_LENGTH];
+  char password[MAX_KEY_LENGTH];
+  getNetworkSsid(ssid);
+  getNetworkKey(password);
+
+  if (ssid[0] == '\0') {
+    Serial.println("No network SSID saved.")
+    Serial.println("A network SSID must be saved to connect to WiFi.")
+    while(1);
+  }
  
   // Connect to WiFi network
   Serial.println();
