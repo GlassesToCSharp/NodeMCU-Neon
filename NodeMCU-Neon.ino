@@ -71,6 +71,7 @@ void setup() {
   // Handlers
   server.on("/power", handlePowerState);
   server.on("/neon-brightness", handleNeonBrightness);
+  server.on("/motor", handleMotor);
 }
  
 void loop() {
@@ -78,40 +79,60 @@ void loop() {
   server.handleClient();
 }
 
+//////////////////////
+const char* contentType = "text/plain";
+const char* emptyResponse = "";
+const int failStatusCode = 400;
+const int successStatusCode = 204;
+
 void handlePowerState() {
-  bool value = false;
-  int statusCode = 400;
-  char content = "text/plain";
-  char response[20] = "";
+  int statusCode = failStatusCode;
   if (server.hasArg("plain")) {
     String json = server.arg("plain");
     JsonDocument doc;
     deserializeJson(doc, json);
-    value = doc["state"];
-    statusCode = 204;
+    bool value = doc["state"];
+    statusCode = successStatusCode;
     // TODO: Set power state of components
     // Use digitalWrite(PowerPin) ?
   }
-  server.send(statusCode, content, response); 
+  server.send(statusCode, contentType, emptyResponse); 
 }
 
 void handleNeonBrightness() {
-  byte value = 0;
-  int statusCode = 400;
-  char content = "text/plain";
-  char response[20] = "";
+  int statusCode = failStatusCode;
   if (server.hasArg("plain")) {
     String json = server.arg("plain");
     JsonDocument doc;
     deserializeJson(doc, json);
-    value = doc["brightness"];
-    if (value < 0 || value > 255) {
-      response = F("0<=Brightess<=20")
-    } else {
-      statusCode = 204;
+    byte value = doc["brightness"];
+    if (value >= 0 && value < 256) {
+      statusCode = successStatusCode;
       // TODO: Set PWN of Neon brightness
       // Use analogWrite(NeonPin) ?
     }
   }
-  server.send(statusCode, content, response); 
+  server.send(statusCode, contentType, emptyResponse); 
+}
+
+void handleMotor() {
+  int statusCode = failStatusCode;
+  if (server.hasArg("plain")) {
+    String json = server.arg("plain");
+    JsonDocument doc;
+    deserializeJson(doc, json);
+    if (doc.containsKey("acceleration")) {
+      // TODO: Set motor acceleration
+      // TODO: Save this acceleration to EEPROM
+    }
+    if (doc.containsKey("speed")) {
+      // TODO: Set motor speed
+      // TOOD: Save this speed to EEPROM
+    }
+    if (doc.containsKey("position")) {
+      // TODO: Set motor position
+    }
+    statusCode = successStatusCode;
+  }
+  server.send(statusCode, contentType, emptyResponse); 
 }
