@@ -69,12 +69,30 @@ void setup() {
   Serial.println(F("/"));
   
   // Handlers
+  server.on("/power", handlePowerState);
   server.on("/neon-brightness", handleNeonBrightness);
 }
  
 void loop() {
   // Check if a client has connected
   server.handleClient();
+}
+
+void handlePowerState() {
+  bool value = false;
+  int statusCode = 400;
+  char content = "text/plain";
+  char response[20] = "";
+  if (server.hasArg("plain")) {
+    String json = server.arg("plain");
+    JsonDocument doc;
+    deserializeJson(doc, json);
+    value = doc["state"];
+    statusCode = 204;
+    // TODO: Set power state of components
+    // Use digitalWrite(PowerPin) ?
+  }
+  server.send(statusCode, content, response); 
 }
 
 void handleNeonBrightness() {
