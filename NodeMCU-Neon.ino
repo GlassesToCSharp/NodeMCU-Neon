@@ -1,3 +1,4 @@
+#include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
@@ -67,9 +68,8 @@ void setup() {
   Serial.print(WiFi.localIP());
   Serial.println(F("/"));
   
-  server.on("/", handleOnConnect);
-  server.on("/led=on", handleLedOnState);
-  server.on("/led=off", handleLedOffState);
+  // server.on("/", handleOnConnect);
+  server.on("/led", handleLedState);
 }
  
 void loop() {
@@ -80,6 +80,20 @@ void loop() {
 void handleOnConnect() {
   digitalWrite(boardLedPin, HIGH);
   server.send(200, "text/html", sendHtml(!digitalRead(boardLedPin))); 
+}
+
+void handleLedState() {
+  bool value = false;
+  if (server.hasArg("plain")) {
+    Serial.println(server.arg("plain"));
+    String json = server.arg("plain");
+    JsonDocument doc;
+    deserializeJson(doc, json);
+    value = doc["state"];
+    server.send(200, "text/html", sendHtml(value)); 
+  } else {
+    server.send(400, "text/plain", ""); 
+  }
 }
 
 void handleLedOnState() {
