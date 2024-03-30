@@ -15,7 +15,10 @@ ESP8266WebServer server(80);
 void setup() {
   Serial.begin(115200);
   delay(10);
+  // TODO: Initialise power state (default off)
   initialiseLedHandler();
+  initialiseEeprom();
+  // TODO: Initialise motors
   Serial.println(F("Testing light..."));
   delay(5000);
   setLedHandlerState(STATE_CONNECTING);
