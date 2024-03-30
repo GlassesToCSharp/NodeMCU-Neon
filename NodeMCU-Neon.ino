@@ -7,9 +7,6 @@
 #include "pinouts.h"
 #include "wifi_credentials.h"
 
-int espLedPin = WIFI_LED; // ESP LED Pin
-int boardLedPin = BOARD_LED; // Board LED Pin
-
 ESP8266WebServer server(80);
  
 void setup() {
