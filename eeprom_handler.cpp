@@ -27,11 +27,8 @@ void _writeTextToEeprom(const int address, const char* text, const int maxLength
 }
 
 void _getTextFromEeprom(const int address, char* text, const int maxLength) {
-  Serial.print("Address: "); Serial.println(address);
-  Serial.print("Max Length: "); Serial.println(maxLength);
   for(int i = 0; i < maxLength; i++) {
     char character = EEPROM.read(address + i);
-    Serial.print(character);
     if (i >= maxLength-1 || character == '\0') {
       // End the string with the null character
       text[i] = '\0';
@@ -40,7 +37,6 @@ void _getTextFromEeprom(const int address, char* text, const int maxLength) {
 
     text[i] = character;
   }
-  Serial.println();
 }
 
 void saveNetworkSsid(const char* ssid) {

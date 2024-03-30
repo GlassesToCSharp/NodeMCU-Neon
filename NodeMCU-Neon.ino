@@ -1,12 +1,10 @@
 #include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
 
 #include "eeprom_handler.h"
 #include "http_handler.h"
 #include "led_handler.h"
 #include "pinouts.h"
-// #include "wifi_credentials.h"
 
 int espLedPin = WIFI_LED; // ESP LED Pin
 int boardLedPin = BOARD_LED; // Board LED Pin
