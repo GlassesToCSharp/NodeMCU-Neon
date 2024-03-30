@@ -4,6 +4,7 @@
 #include "eeprom_handler.h"
 #include "led_handler.h"
 #include "pinouts.h"
+#include "wifi_credentials.h"
 
 int espLedPin = WIFI_LED; // ESP LED Pin
 int boardLedPin = BOARD_LED; // Board LED Pin
@@ -18,11 +19,12 @@ void setup() {
   delay(5000);
   setLedHandlerState(STATE_CONNECTING);
 
+  // TODO: Uncomment the below to read network details from EEPROM, and remove the header to wifi_credentials.
   // Read Network SSID and Passcode from EEPROM
-  char ssid[MAX_SSID_LENGTH];
-  char password[MAX_KEY_LENGTH];
-  getNetworkSsid(ssid);
-  getNetworkKey(password);
+  // char ssid[MAX_SSID_LENGTH];
+  // char password[MAX_KEY_LENGTH];
+  // getNetworkSsid(ssid);
+  // getNetworkKey(password);
 
   if (ssid[0] == '\0') {
     Serial.println(F("No network SSID saved."));
