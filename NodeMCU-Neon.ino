@@ -1,13 +1,11 @@
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
 
 #include "eeprom_handler.h"
 #include "led_handler.h"
 #include "pinouts.h"
+#include "server_essentials.h"
 #include "wifi_credentials.h"
-
-ESP8266WebServer server(80);
  
 void setup() {
   Serial.begin(115200);
@@ -19,6 +17,9 @@ void setup() {
   Serial.println(F("Testing light..."));
   delay(5000);
   setLedHandlerState(STATE_CONNECTING);
+
+  // Load and initialise
+
 
   // TODO: Uncomment the below to read network details from EEPROM, and remove the header to wifi_credentials.
   // Read Network SSID and Passcode from EEPROM
@@ -83,12 +84,6 @@ void loop() {
 }
 
 //////////////////////
-const char* contentTypePlain = "text/plain";
-const char* contentTypeJson = "application/json";
-const char* emptyResponse = "";
-const int failStatusCode = 400;
-const int successStatusCode = 200;
-const int successEmptyStatusCode = 204;
 
 // Default values
 char deviceName[20];
