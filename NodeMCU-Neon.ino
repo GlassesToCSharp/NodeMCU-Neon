@@ -69,6 +69,8 @@ void setup() {
   Serial.println(F("/"));
   
   // Handlers
+  server.on("/status", HTTP_GET, handleStatus);
+  server.on("/name", HTTP_POST, handleName);
   server.on("/power", HTTP_POST, handlePowerState);
   server.on("/neon-brightness", HTTP_POST, handleNeonBrightness);
   server.on("/motor", HTTP_POST, handleMotor);
@@ -81,10 +83,67 @@ void loop() {
 }
 
 //////////////////////
-const char* contentType = "text/plain";
+const char* contentTypePlain = "text/plain";
+const char* contentTypeJson = "application/json";
 const char* emptyResponse = "";
 const int failStatusCode = 400;
-const int successStatusCode = 204;
+const int successStatusCode = 200;
+const int successEmptyStatusCode = 204;
+
+// Default values
+char deviceName[20];
+bool powerState = false;
+byte neonBrightness = 0;
+int motorAcceleration = 0;
+int motorSpeed = 0;
+int motorPosition = 0;
+
+
+void handleStatus() {
+  // Size is determined using the ArduinJson Assistant:
+  // https://arduinojson.org/v6/assistant
+  // JSON structure:
+  // {
+  //   "name": "Device Name        ", // Max size: 19 chars long (20 including '\0' char)
+  //   "power": false,
+  //   "neon": 255,
+  //   "motor": {
+  //     "speed": 1234,
+  //     "position": 1234,
+  //     "acceleration": 1234
+  //   }
+  // }
+  StaticJsonDocument<192> doc;
+
+  doc["name"] = deviceName;
+  doc["power"] = powerState;
+  doc["neon"] = neonBrightness;
+
+  JsonObject motor = doc.createNestedObject("motor");
+  motor["speed"] = motorSpeed;
+  motor["position"] = motorPosition;
+  motor["acceleration"] = motorAcceleration;
+
+  char output[128];
+  serializeJson(doc, output);
+  server.send(successStatusCode, contentTypeJson, output); 
+}
+
+void handleName() {
+  int statusCode = failStatusCode;
+  if (server.hasArg("plain")) {
+    String json = server.arg("plain");
+    JsonDocument doc;
+    deserializeJson(doc, json);
+    // const char* name = doc["name"];
+    // deviceName = name;
+    strncpy(deviceName, doc["name"], sizeof(deviceName));
+    statusCode = successEmptyStatusCode;
+    // TODO: Set power state of components
+    // Use digitalWrite(PowerPin, value) ?
+  }
+  server.send(statusCode, contentTypePlain, emptyResponse); 
+}
 
 void handlePowerState() {
   int statusCode = failStatusCode;
@@ -92,12 +151,12 @@ void handlePowerState() {
     String json = server.arg("plain");
     JsonDocument doc;
     deserializeJson(doc, json);
-    bool value = doc["state"];
-    statusCode = successStatusCode;
+    powerState = doc["state"];
+    statusCode = successEmptyStatusCode;
     // TODO: Set power state of components
-    // Use digitalWrite(PowerPin) ?
+    // Use digitalWrite(PowerPin, value) ?
   }
-  server.send(statusCode, contentType, emptyResponse); 
+  server.send(statusCode, contentTypePlain, emptyResponse); 
 }
 
 void handleNeonBrightness() {
@@ -108,12 +167,13 @@ void handleNeonBrightness() {
     deserializeJson(doc, json);
     byte value = doc["brightness"];
     if (value >= 0 && value < 256) {
-      statusCode = successStatusCode;
-      // TODO: Set PWN of Neon brightness
-      // Use analogWrite(NeonPin) ?
+      statusCode = successEmptyStatusCode;
+      // TODO: Set PWM of Neon brightness
+      // Use analogWrite(NeonPin, value) ?
+      neonBrightness = value;
     }
   }
-  server.send(statusCode, contentType, emptyResponse); 
+  server.send(statusCode, contentTypePlain, emptyResponse); 
 }
 
 void handleMotor() {
@@ -124,16 +184,19 @@ void handleMotor() {
     deserializeJson(doc, json);
     if (doc.containsKey("acceleration")) {
       // TODO: Set motor acceleration
+      motorAcceleration = doc["acceleration"];
     }
     if (doc.containsKey("speed")) {
       // TODO: Set motor speed
+      motorSpeed = doc["speed"];
     }
     if (doc.containsKey("position")) {
       // TODO: Set motor position
+      motorPosition = doc["position"];
     }
-    statusCode = successStatusCode;
+    statusCode = successEmptyStatusCode;
   }
-  server.send(statusCode, contentType, emptyResponse); 
+  server.send(statusCode, contentTypePlain, emptyResponse); 
 }
 
 void handleSave() {
@@ -141,5 +204,5 @@ void handleSave() {
   // Save motor acceleration
   // Save motor speed
   // Save Neon brightness
-  server.send(successStatusCode, contentType, emptyResponse); 
+  server.send(successEmptyStatusCode, contentTypePlain, emptyResponse); 
 }
