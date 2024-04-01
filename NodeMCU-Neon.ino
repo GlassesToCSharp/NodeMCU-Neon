@@ -69,9 +69,10 @@ void setup() {
   Serial.println(F("/"));
   
   // Handlers
-  server.on("/power", handlePowerState);
-  server.on("/neon-brightness", handleNeonBrightness);
-  server.on("/motor", handleMotor);
+  server.on("/power", HTTP_POST, handlePowerState);
+  server.on("/neon-brightness", HTTP_POST, handleNeonBrightness);
+  server.on("/motor", HTTP_POST, handleMotor);
+  server.on("/save", HTTP_POST, handleSave);
 }
  
 void loop() {
@@ -123,11 +124,9 @@ void handleMotor() {
     deserializeJson(doc, json);
     if (doc.containsKey("acceleration")) {
       // TODO: Set motor acceleration
-      // TODO: Save this acceleration to EEPROM
     }
     if (doc.containsKey("speed")) {
       // TODO: Set motor speed
-      // TOOD: Save this speed to EEPROM
     }
     if (doc.containsKey("position")) {
       // TODO: Set motor position
@@ -135,4 +134,12 @@ void handleMotor() {
     statusCode = successStatusCode;
   }
   server.send(statusCode, contentType, emptyResponse); 
+}
+
+void handleSave() {
+  // TODO: Write values to EEPROM
+  // Save motor acceleration
+  // Save motor speed
+  // Save Neon brightness
+  server.send(successStatusCode, contentType, emptyResponse); 
 }
