@@ -70,8 +70,8 @@ void setup() {
   Serial.println(F("/"));
   
   // Handlers
+  initialiseDeviceManagement();
   server.on("/status", HTTP_GET, handleStatus);
-  server.on("/name", HTTP_POST, handleName);
   server.on("/power", HTTP_POST, handlePowerState);
   server.on("/neon-brightness", HTTP_POST, handleNeonBrightness);
   server.on("/motor", HTTP_POST, handleMotor);
@@ -122,22 +122,6 @@ void handleStatus() {
   char output[128];
   serializeJson(doc, output);
   server.send(successStatusCode, contentTypeJson, output); 
-}
-
-void handleName() {
-  int statusCode = failStatusCode;
-  if (server.hasArg("plain")) {
-    String json = server.arg("plain");
-    JsonDocument doc;
-    deserializeJson(doc, json);
-    // const char* name = doc["name"];
-    // deviceName = name;
-    strncpy(deviceName, doc["name"], sizeof(deviceName));
-    statusCode = successEmptyStatusCode;
-    // TODO: Set power state of components
-    // Use digitalWrite(PowerPin, value) ?
-  }
-  server.send(statusCode, contentTypePlain, emptyResponse); 
 }
 
 void handlePowerState() {

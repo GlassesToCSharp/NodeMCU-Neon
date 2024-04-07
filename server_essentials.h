@@ -1,15 +1,16 @@
 #ifndef SERVER_ESSENTIALS_H
 #define SERVER_ESSENTIALS_H
 
+#include <Arduino.h>
 #include <ESP8266WebServer.h>
 
-ESP8266WebServer server(80);
+extern ESP8266WebServer server;
 
-const char* contentTypePlain = "text/plain";
-const char* contentTypeJson = "application/json";
-const char* emptyResponse = "";
-const int failStatusCode = 400;
-const int successStatusCode = 200;
-const int successEmptyStatusCode = 204;
+extern const char* contentTypePlain;
+extern const char* contentTypeJson;
+extern const char* emptyResponse;
+extern const uint16_t failStatusCode;
+extern const uint16_t successStatusCode;
+extern const uint16_t successEmptyStatusCode;
 
 #endif

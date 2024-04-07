@@ -4,14 +4,21 @@
 
 enum MemoryLocations {
   SSID = 0,
-  KEY = MAX_SSID_LENGTH,
+  KEY = SSID_MAX_LENGTH,
 };
 
+bool setupComplete = false;
+
 void initialiseEeprom() {
+  if (setupComplete) {
+    return;
+  }
+
   EEPROM.begin(512);
+  setupComplete = true;
 }
 
-void _writeTextToEeprom(const int address, const char* text, const int maxLength) {
+void writeTextToEeprom(const uint16_t address, const char* text, const uint8_t maxLength) {
   for(int i = 0; i < maxLength; i++) {
     if (i >= maxLength-1 || text[i] == '\0') {
       // End the string with the null character
@@ -25,7 +32,7 @@ void _writeTextToEeprom(const int address, const char* text, const int maxLength
   EEPROM.commit();
 }
 
-void _getTextFromEeprom(const int address, char* text, const int maxLength) {
+void getTextFromEeprom(const uint16_t address, char* text, const uint8_t maxLength) {
   for(int i = 0; i < maxLength; i++) {
     char character = EEPROM.read(address + i);
     if (i >= maxLength-1 || character == '\0') {
@@ -39,17 +46,17 @@ void _getTextFromEeprom(const int address, char* text, const int maxLength) {
 }
 
 void saveNetworkSsid(const char* ssid) {
-  _writeTextToEeprom((int)SSID, ssid, MAX_SSID_LENGTH);
+  writeTextToEeprom((int)SSID, ssid, SSID_MAX_LENGTH);
 }
 
 void saveNetworkKey(const char* key) {
-  _writeTextToEeprom((int)KEY, key, MAX_KEY_LENGTH);
+  writeTextToEeprom((int)KEY, key, KEY_MAX_LENGTH);
 }
 
 void getNetworkSsid(char* ssid) {
-  _getTextFromEeprom((int)SSID, ssid, MAX_SSID_LENGTH);
+  getTextFromEeprom((int)SSID, ssid, SSID_MAX_LENGTH);
 }
 
 void getNetworkKey(char* key) {
-  _getTextFromEeprom((int)KEY, key, MAX_KEY_LENGTH);
+  getTextFromEeprom((int)KEY, key, KEY_MAX_LENGTH);
 }
