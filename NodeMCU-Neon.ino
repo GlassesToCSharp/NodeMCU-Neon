@@ -1,9 +1,11 @@
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 
+#include "device_management.h"
 #include "eeprom_handler.h"
 #include "led_handler.h"
 #include "pinouts.h"
+#include "power_management.h"
 #include "server_essentials.h"
 #include "wifi_credentials.h"
  
@@ -71,8 +73,8 @@ void setup() {
   
   // Handlers
   initialiseDeviceManagement();
+  initialisePowerManagement();
   server.on("/status", HTTP_GET, handleStatus);
-  server.on("/power", HTTP_POST, handlePowerState);
   server.on("/neon-brightness", HTTP_POST, handleNeonBrightness);
   server.on("/motor", HTTP_POST, handleMotor);
   server.on("/save", HTTP_POST, handleSave);
@@ -86,8 +88,6 @@ void loop() {
 //////////////////////
 
 // Default values
-char deviceName[20];
-bool powerState = false;
 byte neonBrightness = 0;
 int motorAcceleration = 0;
 int motorSpeed = 0;
@@ -110,8 +110,10 @@ void handleStatus() {
   // }
   StaticJsonDocument<192> doc;
 
+  char deviceName[20];
+  getDeviceName(deviceName);
   doc["name"] = deviceName;
-  doc["power"] = powerState;
+  doc["power"] = powerStatus;
   doc["neon"] = neonBrightness;
 
   JsonObject motor = doc.createNestedObject("motor");
@@ -122,20 +124,6 @@ void handleStatus() {
   char output[128];
   serializeJson(doc, output);
   server.send(successStatusCode, contentTypeJson, output); 
-}
-
-void handlePowerState() {
-  int statusCode = failStatusCode;
-  if (server.hasArg("plain")) {
-    String json = server.arg("plain");
-    JsonDocument doc;
-    deserializeJson(doc, json);
-    powerState = doc["state"];
-    statusCode = successEmptyStatusCode;
-    // TODO: Set power state of components
-    // Use digitalWrite(PowerPin, value) ?
-  }
-  server.send(statusCode, contentTypePlain, emptyResponse); 
 }
 
 void handleNeonBrightness() {
