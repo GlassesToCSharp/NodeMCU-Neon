@@ -4,12 +4,11 @@
 #include "led_handler.h"
 #include "pinouts.h"
 
-#define FLASH_TIME_PERIOD 2000 // 1000ms per flash cycle
-
 Ticker ledHandler;
 
 LedState currentState;
 const int led = WIFI_LED;
+const uint16_t FLASH_TIME_PERIOD = 2000; // 2000ms per flash cycle
 
 
 void _ledIsr();
@@ -61,10 +60,10 @@ uint32_t _getLedTimeOn() {
   switch(currentState) {
     case STATE_FAILED:
     case STATE_IDLE:
-    return (uint32_t)(FLASH_TIME_PERIOD / 2);
+    return 1;
 
     case STATE_CONNECTING:
-    return 200;
+    return (uint32_t)(FLASH_TIME_PERIOD / 2);
 
     case STATE_CONNECTED:
     return 50;
