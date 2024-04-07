@@ -3,8 +3,8 @@
 
 #include <Arduino.h>
 
-extern const uint8_t SSID_MAX_LENGTH = 20;
-extern const uint8_t KEY_MAX_LENGTH = 20;
+const uint8_t SSID_MAX_LENGTH = 20;
+const uint8_t KEY_MAX_LENGTH = 20;
 
 extern void initialiseConnectionManagement();
 

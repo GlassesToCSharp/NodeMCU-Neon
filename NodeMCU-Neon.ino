@@ -1,6 +1,7 @@
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 
+#include "connection_management.h"
 #include "device_management.h"
 #include "motor_management.h"
 #include "neon_management.h"
@@ -10,6 +11,8 @@
 void setup() {
   Serial.begin(115200);
   while(!Serial);
+  
+  initialiseConnectionManagement();
   // TODO: Initialise power state (default off)
   // TODO: Initialise motors
  

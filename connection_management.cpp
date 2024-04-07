@@ -1,13 +1,11 @@
 #include <ESP8266WiFi.h>
 
+#include "connection_management.h"
 #include "eeprom_handler.h"
 #include "eeprom_memory_management.h"
 #include "led_handler.h"
 #include "server_essentials.h"
 #include "wifi_credentials.h"
-
-const uint8_t SSID_MAX_LENGTH = 20;
-const uint8_t KEY_MAX_LENGTH = 20;
 
 void initialiseConnectionManagement() {
   initialiseEeprom();

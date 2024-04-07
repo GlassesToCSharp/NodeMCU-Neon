@@ -7,8 +7,9 @@
 Ticker ledHandler;
 
 LedState currentState;
-const int led = WIFI_LED;
 const uint16_t FLASH_TIME_PERIOD = 2000; // 2000ms per flash cycle
+const uint16_t CONNECTING_TIME_ON_PERIOD = 1000; // Half the flash cycle
+const uint16_t CONNECTED_TIME_ON_PERIOD = 50; // Very short flash (Blink)
 
 
 void _ledIsr();
@@ -22,7 +23,7 @@ void initialiseLedHandler() {
 }
 
 void initialiseLedHandler(LedState state) {
-  pinMode(led, OUTPUT);
+  pinMode(WIFI_LED, OUTPUT);
   pinMode(BOARD_LED, OUTPUT);
   setBoardLedState(true);
 
@@ -34,14 +35,14 @@ void initialiseLedHandler(LedState state) {
 
 void _ledIsr() {
   // LEDs are active low on NodeMCU (?).
-  if (!digitalRead(led)){
+  if (!digitalRead(WIFI_LED)){
     // do the switching off
     _setLedTime(_getLedTimeOff());
   } else {
     // do the switching on
     _setLedTime(_getLedTimeOn());
   }
-  digitalWrite(led, !(digitalRead(led)));
+  digitalWrite(WIFI_LED, !(digitalRead(WIFI_LED)));
 }
 
 void setLedHandlerState(LedState newState) {
@@ -60,13 +61,13 @@ uint32_t _getLedTimeOn() {
   switch(currentState) {
     case STATE_FAILED:
     case STATE_IDLE:
-    return 1;
+    return FLASH_TIME_PERIOD;
 
     case STATE_CONNECTING:
-    return (uint32_t)(FLASH_TIME_PERIOD / 2);
+    return CONNECTING_TIME_ON_PERIOD;
 
     case STATE_CONNECTED:
-    return 50;
+    return CONNECTED_TIME_ON_PERIOD;
   }
 
   return 0;
