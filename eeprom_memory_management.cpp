@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "connection_management.h"
 #include "device_management.h"
 #include "eeprom_handler.h"
 #include "motor_management.h"

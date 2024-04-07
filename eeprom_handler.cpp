@@ -2,11 +2,6 @@
 
 #include "eeprom_handler.h"
 
-enum MemoryLocations {
-  SSID = 0,
-  KEY = SSID_MAX_LENGTH,
-};
-
 bool setupComplete = false;
 
 void initialiseEeprom() {
@@ -64,20 +59,4 @@ uint16_t getIntFromEeprom(const uint16_t address) {
   uint16_t upper = (uint16_t)EEPROM.read(address);
   uint8_t lower = (uint8_t)EEPROM.read(address + 1);
   return (upper << 8) | lower;
-}
-
-void saveNetworkSsid(const char* ssid) {
-  writeTextToEeprom((int)SSID, ssid, SSID_MAX_LENGTH);
-}
-
-void saveNetworkKey(const char* key) {
-  writeTextToEeprom((int)KEY, key, KEY_MAX_LENGTH);
-}
-
-void getNetworkSsid(char* ssid) {
-  getTextFromEeprom((int)SSID, ssid, SSID_MAX_LENGTH);
-}
-
-void getNetworkKey(char* key) {
-  getTextFromEeprom((int)KEY, key, KEY_MAX_LENGTH);
 }
