@@ -45,6 +45,14 @@ void getTextFromEeprom(const uint16_t address, char* text, const uint8_t maxLeng
   }
 }
 
+void writeByteToEeprom(const uint16_t address, uint8_t number) {
+  EEPROM.put(address, number);
+}
+
+uint8_t getByteFromEeprom(const uint16_t address) {
+  return (uint8_t)EEPROM.read(address);
+}
+
 void saveNetworkSsid(const char* ssid) {
   writeTextToEeprom((int)SSID, ssid, SSID_MAX_LENGTH);
 }

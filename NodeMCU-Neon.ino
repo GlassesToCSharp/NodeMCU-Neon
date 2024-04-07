@@ -4,6 +4,7 @@
 #include "device_management.h"
 #include "eeprom_handler.h"
 #include "led_handler.h"
+#include "neon_management.h"
 #include "pinouts.h"
 #include "power_management.h"
 #include "server_essentials.h"
@@ -74,8 +75,8 @@ void setup() {
   // Handlers
   initialiseDeviceManagement();
   initialisePowerManagement();
+  initialiseNeonManagement();
   server.on("/status", HTTP_GET, handleStatus);
-  server.on("/neon-brightness", HTTP_POST, handleNeonBrightness);
   server.on("/motor", HTTP_POST, handleMotor);
   server.on("/save", HTTP_POST, handleSave);
 }
@@ -88,7 +89,6 @@ void loop() {
 //////////////////////
 
 // Default values
-byte neonBrightness = 0;
 int motorAcceleration = 0;
 int motorSpeed = 0;
 int motorPosition = 0;
@@ -113,8 +113,8 @@ void handleStatus() {
   char deviceName[20];
   getDeviceName(deviceName);
   doc["name"] = deviceName;
-  doc["power"] = powerStatus;
-  doc["neon"] = neonBrightness;
+  doc["power"] = getPowerStatus();
+  doc["neon"] = getNeonBrightness();
 
   JsonObject motor = doc.createNestedObject("motor");
   motor["speed"] = motorSpeed;
@@ -124,23 +124,6 @@ void handleStatus() {
   char output[128];
   serializeJson(doc, output);
   server.send(successStatusCode, contentTypeJson, output); 
-}
-
-void handleNeonBrightness() {
-  int statusCode = failStatusCode;
-  if (server.hasArg("plain")) {
-    String json = server.arg("plain");
-    JsonDocument doc;
-    deserializeJson(doc, json);
-    byte value = doc["brightness"];
-    if (value >= 0 && value < 256) {
-      statusCode = successEmptyStatusCode;
-      // TODO: Set PWM of Neon brightness
-      // Use analogWrite(NeonPin, value) ?
-      neonBrightness = value;
-    }
-  }
-  server.send(statusCode, contentTypePlain, emptyResponse); 
 }
 
 void handleMotor() {
