@@ -4,6 +4,7 @@
 #include "device_management.h"
 #include "eeprom_handler.h"
 #include "led_handler.h"
+#include "motor_management.h"
 #include "neon_management.h"
 #include "pinouts.h"
 #include "power_management.h"
@@ -76,9 +77,8 @@ void setup() {
   initialiseDeviceManagement();
   initialisePowerManagement();
   initialiseNeonManagement();
+  initialiseMotorManagement();
   server.on("/status", HTTP_GET, handleStatus);
-  server.on("/motor", HTTP_POST, handleMotor);
-  server.on("/save", HTTP_POST, handleSave);
 }
  
 void loop() {
@@ -88,11 +88,9 @@ void loop() {
 
 //////////////////////
 
-// Default values
-int motorAcceleration = 0;
-int motorSpeed = 0;
-int motorPosition = 0;
-
+void initialiseSummary() {
+  server.on("/status", HTTP_GET, handleStatus);
+}
 
 void handleStatus() {
   // Size is determined using the ArduinJson Assistant:
@@ -117,42 +115,11 @@ void handleStatus() {
   doc["neon"] = getNeonBrightness();
 
   JsonObject motor = doc.createNestedObject("motor");
-  motor["speed"] = motorSpeed;
-  motor["position"] = motorPosition;
-  motor["acceleration"] = motorAcceleration;
+  motor["speed"] = getMotorSpeed();
+  motor["position"] = getMotorPosition();
+  motor["acceleration"] = getMotorAcceleration();
 
   char output[128];
   serializeJson(doc, output);
   server.send(successStatusCode, contentTypeJson, output); 
-}
-
-void handleMotor() {
-  int statusCode = failStatusCode;
-  if (server.hasArg("plain")) {
-    String json = server.arg("plain");
-    JsonDocument doc;
-    deserializeJson(doc, json);
-    if (doc.containsKey("acceleration")) {
-      // TODO: Set motor acceleration
-      motorAcceleration = doc["acceleration"];
-    }
-    if (doc.containsKey("speed")) {
-      // TODO: Set motor speed
-      motorSpeed = doc["speed"];
-    }
-    if (doc.containsKey("position")) {
-      // TODO: Set motor position
-      motorPosition = doc["position"];
-    }
-    statusCode = successEmptyStatusCode;
-  }
-  server.send(statusCode, contentTypePlain, emptyResponse); 
-}
-
-void handleSave() {
-  // TODO: Write values to EEPROM
-  // Save motor acceleration
-  // Save motor speed
-  // Save Neon brightness
-  server.send(successEmptyStatusCode, contentTypePlain, emptyResponse); 
 }
