@@ -13,7 +13,7 @@ void setup() {
   while(!Serial);
   
   initialiseConnectionManagement();
-  // TODO: Initialise power state (default off)
+  initialisePowerManagement();
   // TODO: Initialise motors
  
   // Print the IP address
@@ -23,7 +23,7 @@ void setup() {
   
   // Handlers
   initialiseDeviceManagement();
-  initialisePowerManagement();
+  registerPowerManagement();
   initialiseNeonManagement();
   initialiseMotorManagement();
   initialiseSummary();
