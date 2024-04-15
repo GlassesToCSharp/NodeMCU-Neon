@@ -14,6 +14,7 @@ void setup() {
   
   initialiseConnectionManagement();
   initialisePowerManagement();
+  initialiseNeonManagement();
   // TODO: Initialise motors
  
   // Print the IP address
@@ -24,7 +25,7 @@ void setup() {
   // Handlers
   initialiseDeviceManagement();
   registerPowerManagement();
-  initialiseNeonManagement();
+  registerNeonManagement();
   initialiseMotorManagement();
   initialiseSummary();
 }

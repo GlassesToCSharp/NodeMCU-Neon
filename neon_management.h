@@ -8,6 +8,7 @@
 const uint8_t NEON_BRIGHTNESS_MAX_LENGTH = 1;
 
 extern void initialiseNeonManagement();
+extern void registerNeonManagement();
 extern uint8_t getNeonBrightness();
 
 #endif
