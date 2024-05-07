@@ -15,7 +15,7 @@ void setup() {
   initialiseConnectionManagement();
   initialisePowerManagement();
   initialiseNeonManagement();
-  // TODO: Initialise motors
+  initialiseMotorManagement();
  
   // Print the IP address
   Serial.print(F("Use this URL to connect: http://"));
@@ -26,7 +26,7 @@ void setup() {
   initialiseDeviceManagement();
   registerPowerManagement();
   registerNeonManagement();
-  initialiseMotorManagement();
+  registerMotorManagement();
   initialiseSummary();
 }
  

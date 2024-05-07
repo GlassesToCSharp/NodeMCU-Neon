@@ -18,7 +18,9 @@ void _handleMotorAcceleration();
 
 void initialiseMotorManagement() {
   // TODO: Setup Stepper Motor with library
+}
 
+void registerMotorManagement() {
   server.on("/motor/position", HTTP_POST, _handleMotorPosition);
   server.on("/motor/speed", HTTP_POST, _handleMotorSpeed);
   server.on("/motor/acceleration", HTTP_POST, _handleMotorAcceleration);
