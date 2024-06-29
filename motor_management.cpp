@@ -31,11 +31,11 @@ uint16_t getMotorPosition() {
 }
 
 uint16_t getMotorSpeed() {
-  return getIntFromEeprom(getMotorSpeedMemoryLocation());
+  return getShortFromEeprom(getMotorSpeedMemoryLocation());
 }
 
 uint16_t getMotorAcceleration() {
-  return getIntFromEeprom(getMotorAccelerationMemoryLocation());
+  return getShortFromEeprom(getMotorAccelerationMemoryLocation());
 }
 
 static void _onPositionSuccess(JsonDocument* doc) {
@@ -47,13 +47,13 @@ static void _onPositionSuccess(JsonDocument* doc) {
 
 static void _onSpeedSuccess(JsonDocument* doc) {
   uint16_t speed = (*doc)[_speedJsonKey].as<uint16_t>();
-  writeIntToEeprom(getMotorSpeedMemoryLocation(), speed);
+  writeShortToEeprom(getMotorSpeedMemoryLocation(), speed);
   // TODO: Set the motor speed using the motor library
 }
 
 static void _onAccelerationSuccess(JsonDocument* doc) {
   uint16_t acceleration = (*doc)[_accelerationJsonKey].as<uint16_t>();
-  writeIntToEeprom(getMotorAccelerationMemoryLocation(), acceleration);
+  writeShortToEeprom(getMotorAccelerationMemoryLocation(), acceleration);
   // TODO: Set the motor acceleration using the motor library
 }
 
