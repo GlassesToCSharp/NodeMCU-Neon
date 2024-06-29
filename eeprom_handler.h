@@ -11,8 +11,11 @@ extern void getTextFromEeprom(const uint16_t address, char* text, const uint8_t 
 extern void writeByteToEeprom(const uint16_t address, const uint8_t number);
 extern uint8_t getByteFromEeprom(const uint16_t address);
 
-extern void writeIntToEeprom(const uint16_t address, uint16_t number);
-extern uint16_t getIntFromEeprom(const uint16_t address);
+extern void writeShortToEeprom(const uint16_t address, uint16_t number);
+extern uint16_t getShortFromEeprom(const uint16_t address);
+
+extern void writeIntToEeprom(const uint16_t address, uint32_t number);
+extern uint32_t getIntFromEeprom(const uint16_t address);
 
 extern void saveNetworkSsid(const char* ssid);
 extern void saveNetworkKey(const char* key);
