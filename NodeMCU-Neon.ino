@@ -3,6 +3,7 @@
 
 #include "connection_management.h"
 #include "device_management.h"
+#include "led_color_management.h"
 #include "motor_management.h"
 #include "neon_management.h"
 #include "power_management.h"
@@ -14,6 +15,7 @@ void setup() {
   
   initialiseConnectionManagement();
   initialisePowerManagement();
+  initialiseLedColorManagement();
   initialiseNeonManagement();
   initialiseMotorManagement();
  
@@ -27,6 +29,7 @@ void setup() {
   registerPowerManagement();
   registerNeonManagement();
   registerMotorManagement();
+  registerLedColorManagement();
   initialiseSummary();
 }
  
@@ -51,6 +54,7 @@ void handleStatus() {
   //   "name": "Device Name        ", // Max size: 19 chars long (20 including '\0' char)
   //   "power": false,
   //   "neon": 255,
+  //   "led-color": 100000,
   //   "motor": {
   //     "speed": 1234,
   //     "position": 1234,
@@ -64,6 +68,7 @@ void handleStatus() {
   doc["name"] = deviceName;
   doc["power"] = getPowerStatus();
   doc["neon"] = getNeonBrightness();
+  doc["led-color"] = getLedColor();
 
   JsonObject motor = doc.createNestedObject("motor");
   motor["speed"] = getMotorSpeed();
