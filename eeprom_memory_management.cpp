@@ -3,6 +3,7 @@
 #include "connection_management.h"
 #include "device_management.h"
 #include "eeprom_handler.h"
+#include "led_color_management.h"
 #include "motor_management.h"
 #include "neon_management.h"
 
@@ -34,4 +35,9 @@ uint16_t getMotorSpeedMemoryLocation() {
 // Sixth item in the memory location
 uint16_t getMotorAccelerationMemoryLocation() {
   return getMotorSpeedMemoryLocation() + MOTOR_SPEED_MAX_LENGTH;
+}
+
+// Sixth item in the memory location
+uint16_t getLedColorMemoryLocation() {
+  return getMotorAccelerationMemoryLocation() + MOTOR_ACCELERATION_MAX_LENGTH;
 }
