@@ -2,6 +2,7 @@
 #define CONNECTION_MANAGEMENT_H
 
 #include <Arduino.h>
+#include <ESP8266mDNS.h> 
 
 const uint8_t SSID_MAX_LENGTH = 20;
 const uint8_t KEY_MAX_LENGTH = 20;

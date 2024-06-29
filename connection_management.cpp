@@ -1,3 +1,4 @@
+#include <ESP8266mDNS.h> 
 #include <ESP8266WiFi.h>
 
 #include "connection_management.h"
@@ -42,8 +43,20 @@ void initialiseConnectionManagement() {
   }
   setLedHandlerState(STATE_CONNECTED);
 
-  // Start the server
+  //Setting the MultiCast DNS
+  if (!MDNS.begin(F("LocalNodeMCU4IoT"))) { // Setting the MDNS as esp8266.local
+    setLedHandlerState(STATE_FAILED);
+    setBoardLedState(false);
+    while(1){
+      delay(2000);
+    }
+  }
+
+  // Start HTTP server
   server.begin();
+
+  // Add service to MDNS-SD
+  MDNS.addService("http", "tcp", 80);
 }
 
 void saveNetworkSsid(const char* newSsid) {

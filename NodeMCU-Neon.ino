@@ -31,6 +31,8 @@ void setup() {
 }
  
 void loop() {
+  // Handle the MDNS service
+  MDNS.update();
   // Check if a client has connected
   server.handleClient();
 }
