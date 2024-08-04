@@ -38,6 +38,8 @@ void loop() {
   MDNS.update();
   // Check if a client has connected
   server.handleClient();
+  // When using the motor, we must poll for position updates.
+  motor.run();
 }
 
 //////////////////////
