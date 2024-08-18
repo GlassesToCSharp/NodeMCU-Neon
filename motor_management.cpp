@@ -7,6 +7,7 @@
 #include "pinouts.h"
 #include "server_essentials.h"
 
+static const int _powerPin = D6;
 static const char* _motorJsonKey = "motor";
 static const char* _positionJsonKey = "position";
 static const char* _accelerationJsonKey = "acceleration";
@@ -30,6 +31,10 @@ uint16_t getMotorSpeed();
 uint16_t getMotorAcceleration();
 
 void initialiseMotorManagement() {
+  // When setting up, ensure the power to the motor is off.
+  pinMode(_powerPin, OUTPUT);
+  digitalWrite(_powerPin, LOW);
+
   uint16_t motorSpeed = getMotorSpeed();
   uint16_t motorAcceleration = getMotorAcceleration();
 
@@ -94,4 +99,13 @@ void _handleMotorSpeed() {
 
 void _handleMotorAcceleration() {
   handleHttpPost(_accelerationJsonKey, _onAccelerationSuccess);
+}
+
+void checkMotor() {
+  motor.run();
+  if (motor.distanceToGo() == 0) {
+    digitalWrite(_powerPin, LOW);
+  } else {
+    digitalWrite(_powerPin, HIGH);
+  }
 }
