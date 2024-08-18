@@ -35,7 +35,6 @@ void initialiseConnectionManagement() {
     delay(500);
     if (WiFi.status() == WL_CONNECT_FAILED) {
       setLedHandlerState(STATE_FAILED);
-      setBoardLedState(false);
       while(1){
         delay(2000);
       }
@@ -46,7 +45,6 @@ void initialiseConnectionManagement() {
   //Setting the MultiCast DNS
   if (!MDNS.begin(F("LocalNodeMCU4IoT"))) { // Setting the MDNS as esp8266.local
     setLedHandlerState(STATE_FAILED);
-    setBoardLedState(false);
     while(1){
       delay(2000);
     }

@@ -24,8 +24,6 @@ void initialiseLedHandler() {
 
 void initialiseLedHandler(LedState state) {
   pinMode(WIFI_LED, OUTPUT);
-  pinMode(BOARD_LED, OUTPUT);
-  setBoardLedState(true);
 
   setLedHandlerState(state);
 
@@ -75,8 +73,4 @@ uint32_t _getLedTimeOn() {
 
 uint32_t _getLedTimeOff() {
   return FLASH_TIME_PERIOD - _getLedTimeOn();
-}
-
-void setBoardLedState(bool enable) {
-  digitalWrite(BOARD_LED, enable);
 }

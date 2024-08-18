@@ -11,6 +11,5 @@ enum LedState {
 extern void initialiseLedHandler();
 extern void initialiseLedHandler(LedState state);
 extern void setLedHandlerState(LedState newState);
-extern void setBoardLedState(bool enable);
 
 #endif
