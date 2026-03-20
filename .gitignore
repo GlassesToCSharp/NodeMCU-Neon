@@ -1,2 +1,21 @@
 
 wifi_credentials.h
+
+# PlatformIO build artifacts
+.pio/
+# VS Code workspace settings
+.vscode/
+# Serial monitor logs
+*.log
+# Compiled binaries
+*.elf
+*.bin
+*.hex
+# Temporary files
+*.tmp
+*.o
+*.d
+*.dep
+*.map
+# Backup files
+*~
