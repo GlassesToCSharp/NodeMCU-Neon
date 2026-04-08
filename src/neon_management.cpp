@@ -5,7 +5,7 @@
 #include "pinouts.h"
 #include "server_essentials.h"
 
-static const int neonPin = D6;
+static const int neonPin = D3;
 
 static const char* jsonKey = "neon-brightness";
 
@@ -13,6 +13,7 @@ void _handleNeonBrightness();
 
 void initialiseNeonManagement() {
   pinMode(neonPin, OUTPUT);
+  analogWriteFreq(500); // reduce to 500 Hz
   analogWrite(neonPin, 0); // Default to completely off
   initialiseEeprom();
 }
