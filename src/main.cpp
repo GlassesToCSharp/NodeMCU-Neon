@@ -53,21 +53,21 @@ void initialiseSummary() {
 }
 
 void handleStatus() {
-  // Size is determined using the ArduinJson Assistant:
-  // https://arduinojson.org/v6/assistant
+  // Size is determined using the ArduinJson Assistant (not really required for v7):
+  // https://arduinojson.org/v7/assistant/#/step1
   // JSON structure:
   // {
   //   "name": "Device Name        ", // Max size: 19 chars long (20 including '\0' char)
   //   "power": false,
-  //   "neon": 255,
-  //   "led-color": 100000,
+  //   "neon": 255, UINT8
+  //   "led-color": 16777215, UINT32 (24-bits)
   //   "motor": {
   //     "speed": 1234,
   //     "position": 1234,
   //     "acceleration": 1234
   //   }
   // }
-  StaticJsonDocument<192> doc;
+  JsonDocument doc;
 
   char deviceName[20];
   getDeviceName(deviceName);
@@ -76,12 +76,14 @@ void handleStatus() {
   doc["neon"] = getNeonBrightness();
   doc["led-color"] = getLedColor();
 
-  JsonObject motor = doc.createNestedObject("motor");
+  JsonObject motor = doc["motor"].to<JsonObject>();
   motor["speed"] = getMotorSpeed();
   motor["position"] = getMotorPosition();
   motor["acceleration"] = getMotorAcceleration();
 
-  char output[128];
+  doc.shrinkToFit();
+
+  String output;
   serializeJson(doc, output);
   server.send(successStatusCode, contentTypeJson, output); 
 }
