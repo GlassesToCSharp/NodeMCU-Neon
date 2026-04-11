@@ -7,10 +7,13 @@
 #include "server_essentials.h"
 
 static const int neonPin = D3;
+static uint8_t currentBrightness = 0;
+uint8_t brightnessArray[fadeStepCount];
 
 static const char* jsonKey = "neon-brightness";
 
 void _handleNeonBrightness();
+void _fadeTo(const uint8_t * newBrightness);
 
 void initialiseNeonManagement() {
   setupPwm(neonPin);
@@ -29,10 +32,20 @@ static void _onSuccess(JsonDocument* doc) {
   uint8_t brightness = (*doc)[jsonKey].as<uint8_t>();
   writeByteToEeprom(getNeonBrightnessMemoryLocation(), brightness);
   // Set PWM of Neon brightness
-  // TODO: Add fade?
-  analogWrite(neonPin, brightness);
+  _fadeTo(&brightness);
 }
 
 void _handleNeonBrightness() {
   handleHttpPost(jsonKey, _onSuccess);
+}
+
+void _fadeTo(const uint8_t * newBrightness) {
+  interpolateFade(&currentBrightness, newBrightness, brightnessArray);
+
+  for(int i = 0; i < fadeStepCount; i++) {
+    analogWrite(neonPin, *(brightnessArray + i));
+    // Add a delay to show the fade. Otherwise, it will fade too quickly.
+    delay(fadeTransitionDelay);
+    currentBrightness = *(brightnessArray + i);
+  }
 }

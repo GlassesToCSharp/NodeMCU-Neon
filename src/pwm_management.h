@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-extern const uint16_t fadeStepCount;
+extern const uint16_t fadeStepCount = 1024;
 extern const uint16_t fadeTransitionDelay;
 
 extern void setupPwm(uint8_t pin);

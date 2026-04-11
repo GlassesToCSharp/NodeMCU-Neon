@@ -1,7 +1,9 @@
 #include <Arduino.h>
 
+#include "pwm_management.h"
+
 const uint16_t fadeDurationMs = 2000;
-const uint16_t fadeStepCount = 1024;
+// const uint16_t fadeStepCount = 1024;
 const uint16_t fadeTransitionDelay = fadeDurationMs / fadeStepCount;
 
 void setupPwm(uint8_t pin) {
