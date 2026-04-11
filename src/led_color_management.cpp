@@ -18,7 +18,6 @@ uint8_t fadeArrayBlue[fadeStepCount];
 
 void _handleLedColor();
 void _fadeTo(const uint32_t * newColor);
-void _fadeTo(const uint8_t * red, const uint8_t * green, const uint8_t * blue);
 
 void initialiseLedColorManagement() {
   setupPwm(redPin);
@@ -32,12 +31,11 @@ void registerLedColorManagement() {
 }
 
 uint32_t getLedColor() {
-  return getIntFromEeprom(getLedColorMemoryLocation());
+  return currentColor;
 }
 
 static void _onColorSuccess(JsonDocument* doc) {
   uint32_t newColor = (*doc)[_colorJsonKey].as<uint32_t>();
-  writeIntToEeprom(getLedColorMemoryLocation(), newColor);
   // Now that we have the colour, we will need to split it between red, green,
   // blue, and opacity. Once that is done, the LEDs need to be set to the right
   // colour. Format of the 32-bit INT is xRGB (where x is ignored). Example:
@@ -86,7 +84,8 @@ void _fadeTo(const uint32_t * newColor) {
     analogWrite(greenPin, *(fadeArrayGreen + i));
     analogWrite(bluePin, *(fadeArrayBlue + i));
     // Add a delay to show the fade. Otherwise, it will fade too quickly.
-    delay(fadeTransitionDelay);
+    // `analogWrite` takes ~2ms to run. 3 calls take ~6ms. 
+    delay(fadeTransitionDelay - 6);
     currentColor = _to32BitColor((fadeArrayRed + i), (fadeArrayGreen + i), (fadeArrayBlue + i));
   }
 }

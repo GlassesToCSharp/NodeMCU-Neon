@@ -17,7 +17,6 @@ void _fadeTo(const uint8_t * newBrightness);
 
 void initialiseNeonManagement() {
   setupPwm(neonPin);
-  initialiseEeprom();
 }
 
 void registerNeonManagement() {
@@ -25,12 +24,11 @@ void registerNeonManagement() {
 }
 
 uint8_t getNeonBrightness() {
-    return getByteFromEeprom(getNeonBrightnessMemoryLocation());
+  return currentBrightness;
 }
 
 static void _onSuccess(JsonDocument* doc) {
   uint8_t brightness = (*doc)[jsonKey].as<uint8_t>();
-  writeByteToEeprom(getNeonBrightnessMemoryLocation(), brightness);
   // Set PWM of Neon brightness
   _fadeTo(&brightness);
 }
@@ -45,7 +43,8 @@ void _fadeTo(const uint8_t * newBrightness) {
   for(int i = 0; i < fadeStepCount; i++) {
     analogWrite(neonPin, *(brightnessArray + i));
     // Add a delay to show the fade. Otherwise, it will fade too quickly.
-    delay(fadeTransitionDelay);
+    // `analogWrite` takes ~2ms to run.
+    delay(fadeTransitionDelay - 2);
     currentBrightness = *(brightnessArray + i);
   }
 }
