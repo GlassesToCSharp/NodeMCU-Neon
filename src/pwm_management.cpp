@@ -4,7 +4,7 @@ const uint16_t fadeDurationMs = 2000;
 const uint16_t fadeStepCount = 1024;
 const uint16_t fadeTransitionDelay = fadeDurationMs / fadeStepCount;
 
-void setup(uint8_t pin) {
+void setupPwm(uint8_t pin) {
   pinMode(pin, OUTPUT);
   analogWriteFreq(500); // reduce to 500 Hz for better compatibility with hardware
   analogWrite(pin, 0); // Default to completely off

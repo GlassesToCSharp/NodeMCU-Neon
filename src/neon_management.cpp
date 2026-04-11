@@ -3,6 +3,7 @@
 #include "eeprom_handler.h"
 #include "eeprom_memory_management.h"
 #include "pinouts.h"
+#include "pwm_management.h"
 #include "server_essentials.h"
 
 static const int neonPin = D3;
@@ -12,9 +13,7 @@ static const char* jsonKey = "neon-brightness";
 void _handleNeonBrightness();
 
 void initialiseNeonManagement() {
-  pinMode(neonPin, OUTPUT);
-  analogWriteFreq(500); // reduce to 500 Hz
-  analogWrite(neonPin, 0); // Default to completely off
+  setupPwm(neonPin);
   initialiseEeprom();
 }
 
