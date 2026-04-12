@@ -23,21 +23,16 @@ uint16_t getDeviceNameMemoryLocation() {
 }
 
 // Fourth item in the memory location
-uint16_t getNeonBrightnessMemoryLocation() {
+uint16_t getFeaturesMemoryLocation() {
   return getDeviceNameMemoryLocation() + DEVICE_NAME_MAX_LENGTH;
 }
 
 // Fifth item in the memory location
 uint16_t getMotorSpeedMemoryLocation() {
-  return getNeonBrightnessMemoryLocation() + NEON_BRIGHTNESS_MAX_LENGTH;
+  return getFeaturesMemoryLocation() + NEON_BRIGHTNESS_MAX_LENGTH;
 }
 
 // Sixth item in the memory location
 uint16_t getMotorAccelerationMemoryLocation() {
   return getMotorSpeedMemoryLocation() + MOTOR_SPEED_MAX_LENGTH;
-}
-
-// Sixth item in the memory location
-uint16_t getLedColorMemoryLocation() {
-  return getMotorAccelerationMemoryLocation() + MOTOR_ACCELERATION_MAX_LENGTH;
 }

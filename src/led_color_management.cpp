@@ -3,10 +3,12 @@
 
 #include "eeprom_handler.h"
 #include "eeprom_memory_management.h"
+#include "feature_management.h"
 #include "pwm_management.h"
 #include "server_essentials.h"
 
 static const char* _colorJsonKey = "color";
+static const Feature _feature = LED_STRIP;
 
 static uint32_t currentColor = 0x00000000;
 static const int redPin = D2;
@@ -44,7 +46,7 @@ static void _onColorSuccess(JsonDocument* doc) {
 }
 
 void _handleLedColor() {
-  handleHttpPost(_colorJsonKey, _onColorSuccess);
+  handleHttpPostWithFeatureEnablement(_colorJsonKey, _feature, _onColorSuccess);
 }
 
 uint8_t _toRed(const uint32_t * color) {

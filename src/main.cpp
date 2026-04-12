@@ -17,6 +17,7 @@ void setup() {
   Serial.begin(115200);
   while(!Serial);
   
+  initialiseFeatureManagement();
   initialisePowerManagement();
   initialiseLedColorManagement();
   initialiseNeonManagement();
@@ -72,14 +73,22 @@ void handleStatus() {
   char deviceName[20];
   getDeviceName(deviceName);
   doc["name"] = deviceName;
-  doc["power"] = getPowerStatus();
-  doc["neon"] = getNeonBrightness();
-  doc["led-color"] = getLedColor();
+  if (isFeatureEnabled(GENERAL_POWER)) {
+    doc["power"] = getPowerStatus();
+  }
+  if (isFeatureEnabled(NEON)) {
+    doc["neon"] = getNeonBrightness();
+  }
+  if (isFeatureEnabled(LED_STRIP)) {
+    doc["led-color"] = getLedColor();
+  }
 
-  JsonObject motor = doc["motor"].to<JsonObject>();
-  motor["speed"] = getMotorSpeed();
-  motor["position"] = getMotorPosition();
-  motor["acceleration"] = getMotorAcceleration();
+  if (isFeatureEnabled(MOTOR)) {
+    JsonObject motor = doc["motor"].to<JsonObject>();
+    motor["speed"] = getMotorSpeed();
+    motor["position"] = getMotorPosition();
+    motor["acceleration"] = getMotorAcceleration();
+  }
 
   doc.shrinkToFit();
 

@@ -5,6 +5,8 @@
 #include <ArduinoJson.h>
 #include <ESP8266WebServer.h>
 
+#include "feature_management.h"
+
 extern ESP8266WebServer server;
 
 extern const char* contentTypePlain;
@@ -15,5 +17,6 @@ extern const uint16_t successStatusCode;
 extern const uint16_t successEmptyStatusCode;
 
 extern void handleHttpPost(const char* key, void (*onSuccess)(JsonDocument*));
+extern void handleHttpPostWithFeatureEnablement(const char* key, const Feature feature, void (*onSuccess)(JsonDocument*));
 
 #endif

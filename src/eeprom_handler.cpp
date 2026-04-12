@@ -42,6 +42,7 @@ void getTextFromEeprom(const uint16_t address, char* text, const uint8_t maxLeng
 
 void writeByteToEeprom(const uint16_t address, uint8_t number) {
   EEPROM.put(address, number);
+  EEPROM.commit();
 }
 
 uint8_t getByteFromEeprom(const uint16_t address) {
@@ -53,6 +54,7 @@ void writeShortToEeprom(const uint16_t address, uint16_t number) {
   uint8_t lower = number & 0xFF;
   EEPROM.put(address, upper);
   EEPROM.put(address + 1, lower);
+  EEPROM.commit();
 }
 
 uint16_t getShortFromEeprom(const uint16_t address) {
@@ -70,6 +72,7 @@ void writeIntToEeprom(const uint16_t address, uint32_t number) {
   EEPROM.put(address + 1, _16_23);
   EEPROM.put(address + 2, _8_15);
   EEPROM.put(address + 3, _0_7);
+  EEPROM.commit();
 }
 
 uint32_t getIntFromEeprom(const uint16_t address) {

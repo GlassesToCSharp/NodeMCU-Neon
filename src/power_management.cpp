@@ -10,6 +10,7 @@ static const int powerPin = D5;
 // default value of "off"
 static bool powerStatus = false;
 static const char* jsonKey = "state";
+static const Feature _feature = GENERAL_POWER;
 
 void _handlePowerStatus();
 
@@ -33,5 +34,5 @@ static void _onSuccess(JsonDocument* doc) {
 }
 
 void _handlePowerStatus() {
-  handleHttpPost(jsonKey, _onSuccess);
+  handleHttpPostWithFeatureEnablement(jsonKey, _feature, _onSuccess);
 }

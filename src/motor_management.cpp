@@ -8,10 +8,10 @@
 #include "server_essentials.h"
 
 static const int _powerPin = D6;
-static const char* _motorJsonKey = "motor";
 static const char* _positionJsonKey = "position";
 static const char* _accelerationJsonKey = "acceleration";
 static const char* _speedJsonKey = "speed";
+static const Feature _feature = MOTOR;
 
 static int16_t motorPosition = 0;
 static const uint16_t _hardcodedMaxSpeed = 1000;
@@ -73,7 +73,6 @@ static void _onPositionSuccess(JsonDocument* doc) {
   motorPosition = (*doc)[_positionJsonKey].as<int16_t>();
   // No need to write to EEPROM, as we're not storing this value. Just move the
   // motor to the desired position.
-  Serial.println(motorPosition);
   motor.moveTo((long)motorPosition);
 }
 
@@ -90,15 +89,15 @@ static void _onAccelerationSuccess(JsonDocument* doc) {
 }
 
 void _handleMotorPosition() {
-  handleHttpPost(_positionJsonKey, _onPositionSuccess);
+  handleHttpPostWithFeatureEnablement(_positionJsonKey, _feature, _onPositionSuccess);
 }
 
 void _handleMotorSpeed() {
-  handleHttpPost(_speedJsonKey, _onSpeedSuccess);
+  handleHttpPostWithFeatureEnablement(_speedJsonKey, _feature, _onSpeedSuccess);
 }
 
 void _handleMotorAcceleration() {
-  handleHttpPost(_accelerationJsonKey, _onAccelerationSuccess);
+  handleHttpPostWithFeatureEnablement(_accelerationJsonKey, _feature, _onAccelerationSuccess);
 }
 
 void checkMotor() {

@@ -6,9 +6,8 @@
 extern uint16_t getSsidMemoryLocation();
 extern uint16_t getNetworkKeyMemoryLocation();
 extern uint16_t getDeviceNameMemoryLocation();
-extern uint16_t getNeonBrightnessMemoryLocation();
+extern uint16_t getFeaturesMemoryLocation();
 extern uint16_t getMotorSpeedMemoryLocation();
 extern uint16_t getMotorAccelerationMemoryLocation();
-extern uint16_t getLedColorMemoryLocation();
 
 #endif

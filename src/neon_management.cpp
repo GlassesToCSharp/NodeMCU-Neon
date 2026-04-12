@@ -11,6 +11,8 @@ static uint8_t currentBrightness = 0;
 uint8_t brightnessArray[fadeStepCount];
 
 static const char* jsonKey = "neon-brightness";
+static const Feature _feature = NEON;
+
 
 void _handleNeonBrightness();
 void _fadeTo(const uint8_t * newBrightness);
@@ -34,7 +36,7 @@ static void _onSuccess(JsonDocument* doc) {
 }
 
 void _handleNeonBrightness() {
-  handleHttpPost(jsonKey, _onSuccess);
+  handleHttpPostWithFeatureEnablement(jsonKey, _feature, _onSuccess);
 }
 
 void _fadeTo(const uint8_t * newBrightness) {
