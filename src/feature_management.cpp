@@ -31,8 +31,6 @@ bool isFeatureEnabled(const Feature feature) {
   // _features & 0x02 == 0x02 == true
   Serial.print("Features: "); Serial.println(_features, HEX);
   uint8_t mapping = _mapFeatureToByteLocation(feature);
-  Serial.print("Mapping: "); Serial.println(mapping, HEX);
-  Serial.print("Result: "); Serial.println(_features & mapping, HEX);
   return _features & mapping;
 }
 
