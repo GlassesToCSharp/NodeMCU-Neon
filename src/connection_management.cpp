@@ -1,5 +1,5 @@
-#include <ESP8266mDNS.h> 
 #include <ESP8266WiFi.h>
+#include <WiFiUdp.h>
 
 #include "connection_management.h"
 #include "eeprom_handler.h"
@@ -7,6 +7,11 @@
 #include "led_handler.h"
 #include "server_essentials.h"
 #include "wifi_credentials.h"
+
+WiFiUDP udp;
+const uint16_t listenPort = 4210;
+
+char incomingPacket[255];
 
 void initialiseConnectionManagement() {
   initialiseEeprom();
@@ -42,19 +47,11 @@ void initialiseConnectionManagement() {
   }
   setLedHandlerState(STATE_CONNECTED);
 
-  //Setting the MultiCast DNS
-  if (!MDNS.begin(F("LocalNodeMCU4IoT"))) { // Setting the MDNS as esp8266.local
-    setLedHandlerState(STATE_FAILED);
-    while(1){
-      delay(2000);
-    }
-  }
+  // Begin listening for UDP broadcasting message
+  udp.begin(listenPort);
 
   // Start HTTP server
   server.begin();
-
-  // Add service to MDNS-SD
-  MDNS.addService("http", "tcp", 80);
 }
 
 void saveNetworkSsid(const char* newSsid) {
@@ -71,4 +68,29 @@ void saveNetworkKey(const char* newKey) {
 
 void getNetworkKey(char* dst) {
   getTextFromEeprom(getNetworkKeyMemoryLocation(), dst, KEY_MAX_LENGTH);
+}
+
+void checkForUdpBroadcastMessage() {
+    int packetSize = udp.parsePacket();
+  if (packetSize) {
+    int len = udp.read(incomingPacket, 255);
+    if (len > 0) incomingPacket[len] = 0;
+
+    String message = String(incomingPacket);
+    Serial.println("Received: " + message);
+
+    if (message == "DISCOVER_NODEMCU") {
+      IPAddress ip = WiFi.localIP();
+
+      String response = "NODEMCU_HERE:";
+      response += ip.toString();
+      response += ":MyDevice"; // You can customize device name
+
+      udp.beginPacket(udp.remoteIP(), udp.remotePort());
+      udp.write(response.c_str());
+      udp.endPacket();
+
+      Serial.println("Response sent");
+    }
+  }
 }

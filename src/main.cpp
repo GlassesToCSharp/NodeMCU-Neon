@@ -39,8 +39,8 @@ void setup() {
 }
  
 void loop() {
-  // Handle the MDNS service
-  MDNS.update();
+  // Handle the UDP broadcast message
+  checkForUdpBroadcastMessage();
   // Check if a client has connected
   server.handleClient();
   // When using the motor, we must poll for position updates.
