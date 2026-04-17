@@ -5,11 +5,15 @@
 
 // Private variables
 char _deviceName[DEVICE_NAME_MAX_LENGTH] = "Default Name";
-static const char* _jsonKey = "name";
+char _deviceId[DEVICE_ID_MAX_LENGTH] = "";
+static const char* _jsonKeyName = "name";
+static const char* _jsonKeyId = "id";
 
 // Private functions
 void _handleNewName();
 void _setDeviceName(char* src);
+void _handleNewId();
+void _setDeviceId(char* src);
 
 // Function Definitions
 
@@ -22,18 +26,24 @@ void initialiseDeviceManagement() {
   if (tempDeviceName[0] == 0xFF) {
     _setDeviceName(_deviceName);
   }
+  // Same with the device ID.
+  char tempDeviceId[DEVICE_ID_MAX_LENGTH];
+  getDeviceId(tempDeviceId);
+  if (tempDeviceId[0] == 0xFF) {
+    _setDeviceId(_deviceId);
+  }
   server.on("/name", HTTP_POST, _handleNewName);
+  server.on("/id", HTTP_POST, _handleNewId);
 }
 
 void getDeviceName(char* dst) {
   const uint16_t address = getDeviceNameMemoryLocation();
   getTextFromEeprom(address, dst, DEVICE_NAME_MAX_LENGTH);
-  Serial.print("Device name: "); Serial.println(dst);
-  Serial.print("Device name in hex: ");
-  for (uint8_t i = 0; i < DEVICE_NAME_MAX_LENGTH; i++) {
-    Serial.print(dst[i], HEX); Serial.print(" ");
-  }
-  Serial.println();
+}
+
+void getDeviceId(char* dst) {
+  const uint16_t address = getDeviceIdMemoryLocation();
+  getTextFromEeprom(address, dst, DEVICE_ID_MAX_LENGTH);
 }
 
 void _setDeviceName(char* src) {
@@ -41,11 +51,25 @@ void _setDeviceName(char* src) {
   writeTextToEeprom(address, src, DEVICE_NAME_MAX_LENGTH);
 }
 
-static void _onSuccess(JsonDocument* doc) {
-  strncpy(_deviceName, (*doc)["name"], sizeof(_deviceName));
+void _setDeviceId(char* src) {
+  const uint16_t address = getDeviceIdMemoryLocation();
+  writeTextToEeprom(address, src, DEVICE_ID_MAX_LENGTH);
+}
+
+static void _onNameSuccess(JsonDocument* doc) {
+  strncpy(_deviceName, (*doc)[_jsonKeyName], sizeof(_deviceName));
   _setDeviceName(_deviceName);
 }
 
+static void _onIdSuccess(JsonDocument* doc) {
+  strncpy(_deviceId, (*doc)[_jsonKeyId], sizeof(_deviceId));
+  _setDeviceId(_deviceId);
+}
+
 void _handleNewName() {
-  handleHttpPost(_jsonKey, _onSuccess);
+  handleHttpPost(_jsonKeyName, _onNameSuccess);
+}
+
+void _handleNewId() {
+  handleHttpPost(_jsonKeyId, _onIdSuccess);
 }

@@ -44,7 +44,9 @@ void loop() {
   // Check if a client has connected
   server.handleClient();
   // When using the motor, we must poll for position updates.
-  checkMotor();
+  if (isFeatureEnabled(MOTOR)) {
+    checkMotor();
+  }
 }
 
 //////////////////////
@@ -58,6 +60,7 @@ void handleStatus() {
   // https://arduinojson.org/v7/assistant/#/step1
   // JSON structure:
   // {
+  //   "id": "XXXX",
   //   "name": "Device Name        ", // Max size: 19 chars long (20 including '\0' char)
   //   "power": false,
   //   "neon": 255, UINT8
@@ -70,7 +73,10 @@ void handleStatus() {
   // }
   JsonDocument doc;
 
-  char deviceName[20];
+  char deviceId[DEVICE_ID_MAX_LENGTH];
+  getDeviceId(deviceId);
+  doc["id"] = deviceId;
+  char deviceName[DEVICE_NAME_MAX_LENGTH];
   getDeviceName(deviceName);
   doc["name"] = deviceName;
   if (isFeatureEnabled(GENERAL_POWER)) {

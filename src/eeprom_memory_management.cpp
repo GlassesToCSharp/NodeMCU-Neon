@@ -36,3 +36,8 @@ uint16_t getMotorSpeedMemoryLocation() {
 uint16_t getMotorAccelerationMemoryLocation() {
   return getMotorSpeedMemoryLocation() + MOTOR_SPEED_MAX_LENGTH;
 }
+
+// Third item in the memory location
+uint16_t getDeviceIdMemoryLocation() {
+  return getMotorAccelerationMemoryLocation() + MOTOR_ACCELERATION_MAX_LENGTH;
+}

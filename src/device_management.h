@@ -8,8 +8,14 @@
 #include "server_essentials.h"
 
 const uint8_t DEVICE_NAME_MAX_LENGTH = 20;
+// 3 chars + '\0'
+// [0-9][a-z][A-Z] = 62 possibilities per char
+// 62*62*62 = 62^3 = 238,328 possible values
+// That should be plenty.
+const uint8_t DEVICE_ID_MAX_LENGTH = 4;
 
 extern void initialiseDeviceManagement();
 extern void getDeviceName(char* dst);
+extern void getDeviceId(char* dst);
 
 #endif

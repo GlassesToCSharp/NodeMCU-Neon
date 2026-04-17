@@ -9,5 +9,6 @@ extern uint16_t getDeviceNameMemoryLocation();
 extern uint16_t getFeaturesMemoryLocation();
 extern uint16_t getMotorSpeedMemoryLocation();
 extern uint16_t getMotorAccelerationMemoryLocation();
+extern uint16_t getDeviceIdMemoryLocation();
 
 #endif
