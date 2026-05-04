@@ -6,7 +6,7 @@
 #include "pwm_management.h"
 #include "server_essentials.h"
 
-static const int neonPin = D3;
+static const int neonPin = D0;
 static uint8_t currentBrightness = 0;
 uint8_t brightnessArray[fadeStepCount];
 
