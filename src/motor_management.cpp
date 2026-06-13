@@ -4,13 +4,11 @@
 
 #include "eeprom_handler.h"
 #include "eeprom_memory_management.h"
+#include "motor_management.h"
 #include "pinouts.h"
 #include "server_essentials.h"
 
 static const int _powerPin = D6;
-static const char* _positionJsonKey = "position";
-static const char* _accelerationJsonKey = "acceleration";
-static const char* _speedJsonKey = "speed";
 static const Feature _feature = MOTOR;
 
 static int16_t motorPosition = 0;
@@ -70,34 +68,34 @@ uint16_t getMotorAcceleration() {
 }
 
 static void _onPositionSuccess(JsonDocument* doc) {
-  motorPosition = (*doc)[_positionJsonKey].as<int16_t>();
+  motorPosition = (*doc)[jsonKeyPosition].as<int16_t>();
   // No need to write to EEPROM, as we're not storing this value. Just move the
   // motor to the desired position.
   motor.moveTo((long)motorPosition);
 }
 
 static void _onSpeedSuccess(JsonDocument* doc) {
-  uint16_t speed = (*doc)[_speedJsonKey].as<uint16_t>();
+  uint16_t speed = (*doc)[jsonKeySpeed].as<uint16_t>();
   writeShortToEeprom(getMotorSpeedMemoryLocation(), speed);
   motor.setMaxSpeed((long)speed);
 }
 
 static void _onAccelerationSuccess(JsonDocument* doc) {
-  uint16_t acceleration = (*doc)[_accelerationJsonKey].as<uint16_t>();
+  uint16_t acceleration = (*doc)[jsonKeyAcceleration].as<uint16_t>();
   writeShortToEeprom(getMotorAccelerationMemoryLocation(), acceleration);
   motor.setAcceleration((long)acceleration);
 }
 
 void _handleMotorPosition() {
-  handleHttpPostWithFeatureEnablement(_positionJsonKey, _feature, _onPositionSuccess);
+  handleHttpPostWithFeatureEnablement(jsonKeyPosition, _feature, _onPositionSuccess);
 }
 
 void _handleMotorSpeed() {
-  handleHttpPostWithFeatureEnablement(_speedJsonKey, _feature, _onSpeedSuccess);
+  handleHttpPostWithFeatureEnablement(jsonKeySpeed, _feature, _onSpeedSuccess);
 }
 
 void _handleMotorAcceleration() {
-  handleHttpPostWithFeatureEnablement(_accelerationJsonKey, _feature, _onAccelerationSuccess);
+  handleHttpPostWithFeatureEnablement(jsonKeyAcceleration, _feature, _onAccelerationSuccess);
 }
 
 void checkMotor() {

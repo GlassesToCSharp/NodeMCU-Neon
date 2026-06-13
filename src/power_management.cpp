@@ -9,7 +9,6 @@ static const int powerPin = D5;
 
 // default value of "off"
 static bool powerStatus = false;
-static const char* jsonKey = "state";
 static const Feature _feature = GENERAL_POWER;
 
 void _handlePowerStatus();
@@ -28,11 +27,11 @@ bool getPowerStatus() {
 }
 
 static void _onSuccess(JsonDocument* doc) {
-  powerStatus = (*doc)[jsonKey].as<bool>();
+  powerStatus = (*doc)[jsonKeyPower].as<bool>();
   // Set power state of components
   digitalWrite(powerPin, powerStatus);
 }
 
 void _handlePowerStatus() {
-  handleHttpPostWithFeatureEnablement(jsonKey, _feature, _onSuccess);
+  handleHttpPostWithFeatureEnablement(jsonKeyPower, _feature, _onSuccess);
 }

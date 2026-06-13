@@ -3,8 +3,10 @@
 
 #include <Arduino.h>
 
+static const char* jsonKeyColor = "led-color";
+
 extern void initialiseLedColorManagement();
 extern void registerLedColorManagement();
-extern uint16_t getLedColor();
+extern uint32_t getLedColor();
 
 #endif

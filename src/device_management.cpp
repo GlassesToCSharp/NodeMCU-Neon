@@ -57,19 +57,19 @@ void _setDeviceId(char* src) {
 }
 
 static void _onNameSuccess(JsonDocument* doc) {
-  strncpy(_deviceName, (*doc)[_jsonKeyName], sizeof(_deviceName));
+  strncpy(_deviceName, (*doc)[jsonKeyName], sizeof(_deviceName));
   _setDeviceName(_deviceName);
 }
 
 static void _onIdSuccess(JsonDocument* doc) {
-  strncpy(_deviceId, (*doc)[_jsonKeyId], sizeof(_deviceId));
+  strncpy(_deviceId, (*doc)[jsonKeyId], sizeof(_deviceId));
   _setDeviceId(_deviceId);
 }
 
 void _handleNewName() {
-  handleHttpPost(_jsonKeyName, _onNameSuccess);
+  handleHttpPost(jsonKeyName, _onNameSuccess);
 }
 
 void _handleNewId() {
-  handleHttpPost(_jsonKeyId, _onIdSuccess);
+  handleHttpPost(jsonKeyId, _onIdSuccess);
 }

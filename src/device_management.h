@@ -14,6 +14,9 @@ const uint8_t DEVICE_NAME_MAX_LENGTH = 20;
 // That should be plenty.
 const uint8_t DEVICE_ID_MAX_LENGTH = 4;
 
+static const char* jsonKeyName = "name";
+static const char* jsonKeyId = "id";
+
 extern void initialiseDeviceManagement();
 extern void getDeviceName(char* dst);
 extern void getDeviceId(char* dst);

@@ -4,6 +4,7 @@
 #include "eeprom_handler.h"
 #include "eeprom_memory_management.h"
 #include "feature_management.h"
+#include "led_color_management.h"
 #include "pwm_management.h"
 #include "server_essentials.h"
 
@@ -37,7 +38,7 @@ uint32_t getLedColor() {
 }
 
 static void _onColorSuccess(JsonDocument* doc) {
-  uint32_t newColor = (*doc)[_colorJsonKey].as<uint32_t>();
+  uint32_t newColor = (*doc)[jsonKeyColor].as<uint32_t>();
   // Now that we have the colour, we will need to split it between red, green,
   // blue, and opacity. Once that is done, the LEDs need to be set to the right
   // colour. Format of the 32-bit INT is xRGB (where x is ignored). Example:
@@ -46,7 +47,7 @@ static void _onColorSuccess(JsonDocument* doc) {
 }
 
 void _handleLedColor() {
-  handleHttpPostWithFeatureEnablement(_colorJsonKey, _feature, _onColorSuccess);
+  handleHttpPostWithFeatureEnablement(jsonKeyColor, _feature, _onColorSuccess);
 }
 
 uint8_t _toRed(const uint32_t * color) {

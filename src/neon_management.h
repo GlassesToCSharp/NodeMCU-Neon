@@ -7,6 +7,8 @@
 // should not be more than one byte.
 const uint8_t NEON_BRIGHTNESS_MAX_LENGTH = 1;
 
+static const char* jsonKeyNeon = "neon-brightness";
+
 extern void initialiseNeonManagement();
 extern void registerNeonManagement();
 extern uint8_t getNeonBrightness();

@@ -2,6 +2,7 @@
 
 #include "eeprom_handler.h"
 #include "eeprom_memory_management.h"
+#include "neon_management.h"
 #include "pinouts.h"
 #include "pwm_management.h"
 #include "server_essentials.h"
@@ -10,7 +11,6 @@ static const int neonPin = D0;
 static uint8_t currentBrightness = 0;
 uint8_t brightnessArray[fadeStepCount];
 
-static const char* jsonKey = "neon-brightness";
 static const Feature _feature = NEON;
 
 
@@ -30,13 +30,13 @@ uint8_t getNeonBrightness() {
 }
 
 static void _onSuccess(JsonDocument* doc) {
-  uint8_t brightness = (*doc)[jsonKey].as<uint8_t>();
+  uint8_t brightness = (*doc)[jsonKeyNeon].as<uint8_t>();
   // Set PWM of Neon brightness
   _fadeTo(&brightness);
 }
 
 void _handleNeonBrightness() {
-  handleHttpPostWithFeatureEnablement(jsonKey, _feature, _onSuccess);
+  handleHttpPostWithFeatureEnablement(jsonKeyNeon, _feature, _onSuccess);
 }
 
 void _fadeTo(const uint8_t * newBrightness) {

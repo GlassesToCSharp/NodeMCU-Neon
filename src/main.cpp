@@ -75,25 +75,25 @@ void handleStatus() {
 
   char deviceId[DEVICE_ID_MAX_LENGTH];
   getDeviceId(deviceId);
-  doc["id"] = deviceId;
+  doc[jsonKeyId] = deviceId;
   char deviceName[DEVICE_NAME_MAX_LENGTH];
   getDeviceName(deviceName);
-  doc["name"] = deviceName;
+  doc[jsonKeyName] = deviceName;
   if (isFeatureEnabled(GENERAL_POWER)) {
-    doc["power"] = getPowerStatus();
+    doc[jsonKeyPower] = getPowerStatus();
   }
   if (isFeatureEnabled(NEON)) {
-    doc["neon"] = getNeonBrightness();
+    doc[jsonKeyNeon] = getNeonBrightness();
   }
   if (isFeatureEnabled(LED_STRIP)) {
-    doc["led-color"] = getLedColor();
+    doc[jsonKeyColor] = getLedColor();
   }
 
   if (isFeatureEnabled(MOTOR)) {
-    JsonObject motor = doc["motor"].to<JsonObject>();
-    motor["speed"] = getMotorSpeed();
-    motor["position"] = getMotorPosition();
-    motor["acceleration"] = getMotorAcceleration();
+    JsonObject motor = doc[jsonKeyMotor].to<JsonObject>();
+    motor[jsonKeySpeed] = getMotorSpeed();
+    motor[jsonKeyPosition] = getMotorPosition();
+    motor[jsonKeyAcceleration] = getMotorAcceleration();
   }
 
   doc.shrinkToFit();
