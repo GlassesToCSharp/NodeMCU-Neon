@@ -29,7 +29,7 @@ uint16_t getFeaturesMemoryLocation() {
 
 // Fifth item in the memory location
 uint16_t getMotorSpeedMemoryLocation() {
-  return getFeaturesMemoryLocation() + NEON_BRIGHTNESS_MAX_LENGTH;
+  return getFeaturesMemoryLocation() + FEATURES_MAX_LENGTH;
 }
 
 // Sixth item in the memory location
