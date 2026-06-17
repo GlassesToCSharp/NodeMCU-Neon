@@ -8,13 +8,12 @@
 #include "pwm_management.h"
 #include "server_essentials.h"
 
-static const char* _colorJsonKey = "color";
 static const Feature _feature = LED_STRIP;
 
 static uint32_t currentColor = 0x00000000;
-static const int redPin = D3;
+static const int redPin = D1;
 static const int greenPin = D2;
-static const int bluePin = D1;
+static const int bluePin = D3;
 uint8_t fadeArrayRed[fadeStepCount];
 uint8_t fadeArrayGreen[fadeStepCount];
 uint8_t fadeArrayBlue[fadeStepCount];
