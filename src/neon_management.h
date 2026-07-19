@@ -12,5 +12,6 @@ static const char* jsonKeyNeon = "neon-brightness";
 extern void initialiseNeonManagement();
 extern void registerNeonManagement();
 extern uint8_t getNeonBrightness();
+extern void fadeNeon();
 
 #endif

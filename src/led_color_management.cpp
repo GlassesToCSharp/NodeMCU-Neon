@@ -9,17 +9,17 @@
 #include "server_essentials.h"
 
 static const Feature _feature = LED_STRIP;
-
-static volatile uint32_t _currentColor = 0x00000000;
 static const int redPin = D1;
 static const int greenPin = D2;
 static const int bluePin = D3;
+
+static volatile uint32_t _currentColor = 0x00000000;
 uint8_t fadeArrayRed[fadeStepCount];
 uint8_t fadeArrayGreen[fadeStepCount];
 uint8_t fadeArrayBlue[fadeStepCount];
-volatile bool requiresFade = false;
-volatile uint32_t timeSinceLastFadeUpdate = 0;
-volatile uint16_t fadeStepTracker = 0;
+static volatile bool requiresFade = false;
+static volatile uint32_t timeSinceLastFadeUpdate = 0;
+static volatile uint16_t fadeStepTracker = 0;
 
 void _handleLedColor();
 uint32_t _to32BitColor(const uint8_t * red, const uint8_t * green, const uint8_t * blue);
@@ -63,7 +63,7 @@ void fadeColor() {
   
   fadeStepTracker++;
   
-  if (fadeStepTracker == fadeStepCount) {
+  if (fadeStepTracker >= fadeStepCount) {
     // Fade complete. Prevet any further updates to the fade.
     requiresFade = false;
   }

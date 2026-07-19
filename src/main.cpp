@@ -52,6 +52,11 @@ void loop() {
   if (isFeatureEnabled(LED_STRIP)){
     fadeColor();
   }
+
+  // Do neon fade if it is enabled
+  if (isFeatureEnabled(NEON)){
+    fadeNeon();
+  }
 }
 
 //////////////////////

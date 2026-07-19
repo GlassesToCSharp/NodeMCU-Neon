@@ -7,15 +7,18 @@
 #include "pwm_management.h"
 #include "server_essentials.h"
 
-static const int neonPin = D0;
-static uint8_t currentBrightness = 0;
-uint8_t brightnessArray[fadeStepCount];
-
 static const Feature _feature = NEON;
+static const int neonPin = D0;
+
+static volatile uint8_t _currentBrightness = 0;
+uint8_t brightnessArray[fadeStepCount];
+static volatile bool requiresFade = false;
+static volatile uint32_t timeSinceLastFadeUpdate = 0;
+static volatile uint16_t fadeStepTracker = 0;
 
 
 void _handleNeonBrightness();
-void _fadeTo(const uint8_t * newBrightness);
+void _createFadeTransition(const uint8_t * newBrightness);
 
 void initialiseNeonManagement() {
   setupPwm(neonPin);
@@ -26,27 +29,46 @@ void registerNeonManagement() {
 }
 
 uint8_t getNeonBrightness() {
-  return currentBrightness;
+  return _currentBrightness;
+}
+
+void fadeNeon() {
+  if (!requiresFade) {
+    return;
+  }
+
+  // Add a delay to show the fade. Otherwise, it will fade too quickly.
+  // `analogWrite` takes ~2ms to run.
+  if ((millis() - timeSinceLastFadeUpdate) < (fadeTransitionDelay - 2)){
+    return;
+  }
+  
+  analogWrite(neonPin, *(brightnessArray + fadeStepTracker));
+  
+  timeSinceLastFadeUpdate = millis();
+  _currentBrightness = *(brightnessArray + fadeStepTracker);
+  
+  fadeStepTracker++;
+  
+  if (fadeStepTracker >= fadeStepCount) {
+    // Fade complete. Prevet any further updates to the fade.
+    requiresFade = false;
+  }
 }
 
 static void _onSuccess(JsonDocument* doc) {
   uint8_t brightness = (*doc)[jsonKeyNeon].as<uint8_t>();
-  // Set PWM of Neon brightness
-  _fadeTo(&brightness);
+  _createFadeTransition(&brightness);
+  fadeStepTracker = 0;
+  requiresFade = true;
 }
 
 void _handleNeonBrightness() {
   handleHttpPostWithFeatureEnablement(jsonKeyNeon, _feature, _onSuccess);
 }
 
-void _fadeTo(const uint8_t * newBrightness) {
-  interpolateFade(&currentBrightness, newBrightness, brightnessArray);
 
-  for(int i = 0; i < fadeStepCount; i++) {
-    analogWrite(neonPin, *(brightnessArray + i));
-    // Add a delay to show the fade. Otherwise, it will fade too quickly.
-    // `analogWrite` takes ~2ms to run.
-    delay(fadeTransitionDelay - 2);
-    currentBrightness = *(brightnessArray + i);
-  }
+void _createFadeTransition(const uint8_t * newBrightness) {
+  uint8_t currentBrightness = _currentBrightness;
+  interpolateFade(&currentBrightness, newBrightness, brightnessArray);
 }
