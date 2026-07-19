@@ -10,22 +10,26 @@
 
 static const Feature _feature = LED_STRIP;
 
-static uint32_t currentColor = 0x00000000;
+static volatile uint32_t _currentColor = 0x00000000;
 static const int redPin = D1;
 static const int greenPin = D2;
 static const int bluePin = D3;
 uint8_t fadeArrayRed[fadeStepCount];
 uint8_t fadeArrayGreen[fadeStepCount];
 uint8_t fadeArrayBlue[fadeStepCount];
+volatile bool requiresFade = false;
+volatile uint32_t timeSinceLastFadeUpdate = 0;
+volatile uint16_t fadeStepTracker = 0;
 
 void _handleLedColor();
-void _fadeTo(const uint32_t * newColor);
+uint32_t _to32BitColor(const uint8_t * red, const uint8_t * green, const uint8_t * blue);
+void _createFadeTransition(const uint32_t * newColor);
 
 void initialiseLedColorManagement() {
   setupPwm(redPin);
   setupPwm(greenPin);
   setupPwm(bluePin);
-  currentColor = 0x00000000;
+  _currentColor = 0x00000000;
 }
 
 void registerLedColorManagement() {
@@ -33,16 +37,43 @@ void registerLedColorManagement() {
 }
 
 uint32_t getLedColor() {
-  return currentColor;
+  return _currentColor;
+}
+
+void fadeColor() {
+  if (!requiresFade) {
+    return;
+  }
+
+  // Add a delay to show the fade. Otherwise, it will fade too quickly.
+  // `analogWrite` takes ~2ms to run. 3 calls take ~6ms.
+  if ((millis() - timeSinceLastFadeUpdate) < (fadeTransitionDelay - 6)){
+    return;
+  }
+
+  analogWrite(redPin, *(fadeArrayRed + fadeStepTracker));
+  analogWrite(greenPin, *(fadeArrayGreen + fadeStepTracker));
+  analogWrite(bluePin, *(fadeArrayBlue + fadeStepTracker));
+  
+  timeSinceLastFadeUpdate = millis();
+  _currentColor = _to32BitColor(
+    (fadeArrayRed + fadeStepTracker), 
+    (fadeArrayGreen + fadeStepTracker), 
+    (fadeArrayBlue + fadeStepTracker));
+  
+  fadeStepTracker++;
+  
+  if (fadeStepTracker == fadeStepCount) {
+    // Fade complete. Prevet any further updates to the fade.
+    requiresFade = false;
+  }
 }
 
 static void _onColorSuccess(JsonDocument* doc) {
   uint32_t newColor = (*doc)[jsonKeyColor].as<uint32_t>();
-  // Now that we have the colour, we will need to split it between red, green,
-  // blue, and opacity. Once that is done, the LEDs need to be set to the right
-  // colour. Format of the 32-bit INT is xRGB (where x is ignored). Example:
-  // colour RED is 0x00FF0000.
-  _fadeTo(&newColor);
+  _createFadeTransition(&newColor);
+  fadeStepTracker = 0;
+  requiresFade = true;
 }
 
 void _handleLedColor() {
@@ -68,7 +99,14 @@ uint32_t _to32BitColor(const uint8_t * red, const uint8_t * green, const uint8_t
     (*blue);
 }
 
-void _fadeTo(const uint32_t * newColor) {
+void _createFadeTransition(const uint32_t * newColor) {
+  // Now that we have the colour, we will need to split it between red, green,
+  // blue, and opacity. Once that is done, the LEDs need to be set to the right
+  // colour. Format of the 32-bit INT is xRGB (where x is ignored). Example:
+  // colour RED is 0x00FF0000.
+
+  // Take away the volatility here.
+  uint32_t currentColor = _currentColor;
   uint8_t currentRed = _toRed(&currentColor);
   uint8_t currentGreen = _toGreen(&currentColor);
   uint8_t currentBlue = _toBlue(&currentColor);
@@ -80,14 +118,4 @@ void _fadeTo(const uint32_t * newColor) {
   interpolateFade(&currentRed, &newRed, fadeArrayRed);
   interpolateFade(&currentGreen, &newGreen, fadeArrayGreen);
   interpolateFade(&currentBlue, &newBlue, fadeArrayBlue);
-
-  for(int i = 0; i < fadeStepCount; i++) {
-    analogWrite(redPin, *(fadeArrayRed + i));
-    analogWrite(greenPin, *(fadeArrayGreen + i));
-    analogWrite(bluePin, *(fadeArrayBlue + i));
-    // Add a delay to show the fade. Otherwise, it will fade too quickly.
-    // `analogWrite` takes ~2ms to run. 3 calls take ~6ms. 
-    delay(fadeTransitionDelay - 6);
-    currentColor = _to32BitColor((fadeArrayRed + i), (fadeArrayGreen + i), (fadeArrayBlue + i));
-  }
 }

@@ -47,6 +47,11 @@ void loop() {
   if (isFeatureEnabled(MOTOR)) {
     checkMotor();
   }
+
+  // Do colour fade if it is enabled
+  if (isFeatureEnabled(LED_STRIP)){
+    fadeColor();
+  }
 }
 
 //////////////////////
