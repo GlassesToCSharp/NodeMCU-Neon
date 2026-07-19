@@ -8,6 +8,8 @@
 #include "server_essentials.h"
 #include "wifi_credentials.h"
 
+const char* const jsonKeySignal = "signal";
+
 WiFiUDP udp;
 const uint16_t listenPort = 4210;
 
@@ -93,4 +95,8 @@ void checkForUdpBroadcastMessage() {
       Serial.println("Response sent");
     }
   }
+}
+
+int8_t getSignalStrength() {
+  return WiFi.RSSI();
 }

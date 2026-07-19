@@ -6,6 +6,8 @@
 const uint8_t SSID_MAX_LENGTH = 20;
 const uint8_t KEY_MAX_LENGTH = 20;
 
+extern const char* const jsonKeySignal;
+
 extern void initialiseConnectionManagement();
 extern void checkForUdpBroadcastMessage();
 
@@ -14,5 +16,7 @@ extern void getNetworkSsid(char* dst);
 
 extern void saveNetworkKey(const char* newKey);
 extern void getNetworkKey(char* dst);
+
+extern int8_t getSignalStrength();
 
 #endif

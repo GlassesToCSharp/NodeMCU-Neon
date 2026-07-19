@@ -72,6 +72,7 @@ void handleStatus() {
   // {
   //   "id": "XXXX",
   //   "name": "Device Name        ", // Max size: 19 chars long (20 including '\0' char)
+  //   "signal": 255, INT8
   //   "power": false,
   //   "neon": 255, UINT8
   //   "led-color": 16777215, UINT32 (24-bits)
@@ -89,6 +90,7 @@ void handleStatus() {
   char deviceName[DEVICE_NAME_MAX_LENGTH];
   getDeviceName(deviceName);
   doc[jsonKeyName] = deviceName;
+  doc[jsonKeySignal] = getSignalStrength();
   if (isFeatureEnabled(GENERAL_POWER)) {
     doc[jsonKeyPower] = getPowerStatus();
   }
