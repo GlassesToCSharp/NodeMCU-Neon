@@ -4,6 +4,8 @@
 #include "eeprom_memory_management.h"
 #include "feature_management.h"
 
+const char* const jsonKeyFeatureStatus = "feature_status";
+
 uint8_t _features = 0x00; // Everything disabled
 
 uint8_t _mapFeatureToByteLocation(const Feature feature);

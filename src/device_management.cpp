@@ -3,11 +3,12 @@
 #include "device_management.h"
 #include "server_essentials.h"
 
+const char* const jsonKeyName = "name";
+const char* const jsonKeyId = "id";
+
 // Private variables
 char _deviceName[DEVICE_NAME_MAX_LENGTH] = "Default Name";
 char _deviceId[DEVICE_ID_MAX_LENGTH] = "";
-static const char* _jsonKeyName = "name";
-static const char* _jsonKeyId = "id";
 
 // Private functions
 void _handleNewName();

@@ -8,6 +8,11 @@
 #include "pinouts.h"
 #include "server_essentials.h"
 
+const char* const jsonKeyMotor = "motor";
+const char* const jsonKeyPosition = "position";
+const char* const jsonKeyAcceleration = "acceleration";
+const char* const jsonKeySpeed = "speed";
+
 static const int _powerPin = D6;
 static const Feature _feature = MOTOR;
 

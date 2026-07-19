@@ -11,7 +11,8 @@ enum Feature {
 };
 
 const uint8_t FEATURES_MAX_LENGTH = 1;
-static const char* jsonKeyFeatureStatus = "feature_status";
+
+extern const char* const jsonKeyFeatureStatus;
 
 extern void initialiseFeatureManagement();
 extern void enableFeature(const Feature feature);

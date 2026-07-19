@@ -8,6 +8,8 @@
 #include "pwm_management.h"
 #include "server_essentials.h"
 
+const char* const jsonKeyColor = "led-color";
+
 static const Feature _feature = LED_STRIP;
 static const int redPin = D1;
 static const int greenPin = D2;

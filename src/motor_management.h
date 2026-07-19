@@ -8,10 +8,10 @@ const uint8_t MOTOR_SPEED_MAX_LENGTH = 2;
 const uint8_t MOTOR_ACCELERATION_MAX_LENGTH = 2;
 
 
-static const char* jsonKeyMotor = "motor";
-static const char* jsonKeyPosition = "position";
-static const char* jsonKeyAcceleration = "acceleration";
-static const char* jsonKeySpeed = "speed";
+extern const char* const jsonKeyMotor;
+extern const char* const jsonKeyPosition;
+extern const char* const jsonKeyAcceleration;
+extern const char* const jsonKeySpeed;
 
 extern void initialiseMotorManagement();
 extern void registerMotorManagement();

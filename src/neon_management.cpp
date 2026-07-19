@@ -7,6 +7,8 @@
 #include "pwm_management.h"
 #include "server_essentials.h"
 
+const char* const jsonKeyNeon = "neon-brightness";
+
 static const Feature _feature = NEON;
 static const int neonPin = D0;
 
