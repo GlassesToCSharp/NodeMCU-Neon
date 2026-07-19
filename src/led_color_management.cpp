@@ -47,7 +47,7 @@ void fadeColor() {
 
   // Add a delay to show the fade. Otherwise, it will fade too quickly.
   // `analogWrite` takes ~2ms to run. 3 calls take ~6ms.
-  if ((millis() - timeSinceLastFadeUpdate) < (fadeTransitionDelay - 6)){
+  if ((millis() - timeSinceLastFadeUpdate) < (fadeTransitionDelay - 6U)){
     return;
   }
 

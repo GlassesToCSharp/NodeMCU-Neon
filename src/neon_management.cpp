@@ -39,7 +39,7 @@ void fadeNeon() {
 
   // Add a delay to show the fade. Otherwise, it will fade too quickly.
   // `analogWrite` takes ~2ms to run.
-  if ((millis() - timeSinceLastFadeUpdate) < (fadeTransitionDelay - 2)){
+  if ((millis() - timeSinceLastFadeUpdate) < (fadeTransitionDelay - 2U)){
     return;
   }
   
